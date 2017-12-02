@@ -22,6 +22,12 @@ for (i = 0; i < input.length; i++) {
     }
 }
 output += "Loop completed. \n";
-output += "\n<strong>Part 2 completed. The correct answer is " + sum + ".</strong>\n";
+// output += "\n<strong>Part 2 completed. The correct answer is " + sum + ".</strong>\n";
+
+output += "\n<div class=\"result\"><strong>Part 2 completed. The correct answer is ";
+output += "<span id=\"result\">" + sum + "</span>";
+output += "<span id=\"mask\">[hover]</span>";
+output += ".</strong></div> \n";
+
 output += "</pre>";
 document.getElementById("day1part2").innerHTML = output;

@@ -24,6 +24,12 @@ if (input[0] == input[(input.length - 1)]) {
     output +="Sum: " + sum + " (" + input[i] + " at the last and first indexes) \n";
 }
 output += "Circularity completed.\n";
-output += "\n<strong>Part 1 completed. The correct answer is " + sum + ".</strong> \n";
+// output += "\n<strong>Part 1 completed. The correct answer is " + sum + ".</strong> \n";
+
+output += "\n<div class=\"result\"><strong>Part 1 completed. The correct answer is ";
+output += "<span id=\"result\">" + sum + "</span>";
+output += "<span id=\"mask\">[hover]</span>";
+output += ".</strong></div> \n";
+
 output += "</pre>";
 document.getElementById("day1part1").innerHTML = output;

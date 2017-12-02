@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="header-images.css">
+<link rel="stylesheet" href="reveal-on-hover.css">
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;}
 a {text-decoration: none;}
@@ -53,15 +54,35 @@ and is wrapped around the whole page content, except for the footer in this exam
             <!-- <h5></h5> -->
         </div> 
         <div class="w3-container">
-            <p>As you walk through the door, a glowing humanoid shape yells in your direction. "You there! Your state appears to be idle. Come help us 
-                repair the corruption in this spreadsheet - if we take another millisecond, we'll have to display an hourglass cursor!"</p>
-            <div id="day2part1tmp"></div>
+            <p>As you walk through the door, a glowing humanoid shape yells in your direction. "You there! Your state appears to be idle. <strong>Come help us 
+                repair the corruption in this spreadsheet</strong> - if we take another millisecond, we'll have to display an hourglass cursor!"</p>
+            <div id="day2part1"></div>
             <script src="day2part1.js"></script>
-            <div class="w3-row">
-                <!-- <div class="w3-col m8 s12"> <p><button class="w3-button w3-padding-large w3-white w3-border"><b>READ MORE »</b></button></p> </div> -->
-                <!-- <div class="w3-col m4 w3-hide-small"> <p><span class="w3-padding-large w3-right"><b>Comments  </b> <span class="w3-badge">2</span></span></p> </div> -->
-            </div>
+            <div class="w3-row"></div>
         </div>
+        <div class="w3-container">
+                <!-- <h3>Part Two</h3> -->
+                <h5>Part Two</h5>
+            </div>
+            <div class="w3-container">
+                <p>Based on what we're seeing, it looks like all the User wanted is some information about the <strong>evenly divisible values</strong> in the spreadsheet. </p>
+                <div id="day2part2"></div>
+                <script src="day2part2.js"></script>
+                <div class="w3-row"></div>
+            </div>
+        <div class="w3-container">
+                <div class="w3-row">
+                    <div class="w3-col m8 s12"> 
+                        <p><a href="http://adventofcode.com/2017/day/2"><button class="w3-button w3-padding-large w3-white w3-border"><b>DAY 2 PUZZLE AT Advent of Code 2017 »</b></button></a></p> 
+                    </div>
+                    <div class="w3-col m4 w3-hide-small"> 
+                        <p><span class="w3-padding-large w3-right">
+                            <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day2part1.js"><b>day2part1.js</b></a>, 
+                            <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day2part2.js"><b>day2part2.js</b></a>
+                        </span></p> 
+                    </div> 
+                </div>
+            </div>
     </div>
 
     <!-- Blog entry -->
@@ -93,10 +114,16 @@ and is wrapped around the whole page content, except for the footer in this exam
         </div>
         <div class="w3-container">
             <div class="w3-row">
-                        <div class="w3-col m8 s12"> <p><a href="http://adventofcode.com/2017/day/1"><button class="w3-button w3-padding-large w3-white w3-border"><b>SEE THE DAY 1 PUZZLE AT Advent of Code 2017 »</b></button></a></p> </div>
-                        <!-- <div class="w3-col m4 w3-hide-small"> <p><span class="w3-padding-large w3-right"><b>Comments  </b> <span class="w3-badge">2</span></span></p> </div> -->
-                    </div>
-            <!-- <p><a href="http://adventofcode.com/2017/day/1">The original puzzle</a></p> -->
+                <div class="w3-col m8 s12"> 
+                    <p><a href="http://adventofcode.com/2017/day/1"><button class="w3-button w3-padding-large w3-white w3-border"><b>DAY 1 PUZZLE AT Advent of Code 2017 »</b></button></a></p> 
+                </div>
+                <div class="w3-col m4 w3-hide-small"> 
+                    <p><span class="w3-padding-large w3-right">
+                        <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day1part1.js"><b>day1part1.js</b></a>, 
+                        <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day1part2.js"><b>day1part2.js</b></a>
+                    </span></p> 
+                </div> 
+            </div>
         </div>
     </div>
   
@@ -135,8 +162,8 @@ and is wrapped around the whole page content, except for the footer in this exam
         </a>
         <a href="#day2post" >
             <li class="w3-padding-16">
-                <span class="w3-large">Day 2: TBD</span><br>
-                <span>Remains to be seen.</span>
+                <span class="w3-large">Day 2: Corruption Checksum</span><br>
+                <span>"Come help us repair the corruption in this spreadsheet!"</span>
             </li>
         </a>
         <!-- <a href="#day2part1post">

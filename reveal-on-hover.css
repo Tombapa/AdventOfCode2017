@@ -1,0 +1,19 @@
+div.result {
+    background-color: rgba(211, 211, 211, 0.33);
+}
+
+div.result span#mask {
+    display: inline;
+}
+  
+div.result:hover span#mask {
+    display: none;
+}
+  
+div.result span#result {
+    display: none;
+}
+  
+div.result:hover span#result {
+    display: inline;
+}

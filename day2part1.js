@@ -18,45 +18,56 @@ input[15] =  "5278	113	4427	569	5167	175	192	3903	155	1051	4121	5140	2328	203	56
 // console.dir(input);
 
 var checksum = 0;
-var cutoff = 5;
+var cutoff = 2;
 
-
+var output = "<pre>";
+output += "\nEnter row loop - " + input.length + " rounds.";
 for (i = 0; i < input.length; i++) {
     var entry = "";
     var row = input[i].split('\t');
     var min = 0;
     var max = 0;
-    for (j = 0; j < row.length; j++) {
+    if (i == cutoff) {
+        entry += "\n  ...";
+    }
+    else {
+        entry += "\n  Enter column loop - " + row.length + " rounds.";
+    }
+    for (j = 0; j < row.length; j++) {  
         var cell = parseInt(row[j]);
         if (min == 0 && max == 0) {
             if (i < cutoff) {
-                entry += "\nRow " + i + ": set initial min anx max value " + cell + " at column " + j;
+                entry += "\n\tRow " + i + ": set initial min anx max value " + cell + " at column " + j;
             }
             min = cell;
             max = cell;
         }
         else if (cell < min) {
             if (i < cutoff) {
-                entry += "\nRow " + i + ": new min value " + cell + " at column " + j;
+                entry += "\n\tRow " + i + ": new min value " + cell + " at column " + j;
             }
             min = cell;
         }
         else if (cell > max) {
             if (i < cutoff) {
-                "\nRow " + i + ": new max value " + cell + " at column " + j;
+                "\n\tRow " + i + ": new max value " + cell + " at column " + j;
             }
             max = cell;
         }
     }
     checksum += max - min;
     if (i < cutoff) {
-        entry += "\nRow " + i + ": min == " + min + ", max == " + max + ", diff == " + (max - min) + ", checksum == " + checksum;
-    }
-    else if (i == cutoff) {
-        entry += "\n...";
+        entry += "\n\tRow " + i + ": min == " + min + ", max == " + max + ", diff == " + (max - min) + ", checksum == " + checksum;
+        entry += "\n  Loop completed.";
     }
     if (i <= cutoff) {
-        console.log(entry);
+        output += entry;
     }
 }
-console.log("Checksum == " + checksum);
+output += "\nLoop completed. \n";
+output += "\n<div class=\"result\"><strong>Part 1 completed. The correct answer is ";
+output += "<span id=\"result\">" + checksum + "</span>";
+output += "<span id=\"mask\">[hover]</span>";
+output += ".</strong></div> \n";
+output += "</pre>";
+document.getElementById("day2part1").innerHTML = output;
