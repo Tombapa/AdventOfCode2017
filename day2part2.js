@@ -18,11 +18,8 @@ input[15] =  "5278	113	4427	569	5167	175	192	3903	155	1051	4121	5140	2328	203	56
 // console.dir(input);
 
 var sum = 0;
-var firstUnmatchedRow = 0;
-var cutoffRows = 16;
-var cutoffColumnsA = 2;
-var cutoffColumnsB = 2;
-var rowmatch;
+var cutoffRows = 3;
+var rowmatch = false;
 
 var output = "<pre>";
 output += "\nEnter row loop - " + input.length + " rounds.";
@@ -32,72 +29,43 @@ for (i = 0; i < input.length; i++) {
     var col1 = 0;
     var col2 = 0;
     rowmatch = false;
-    console.log("i==" + i + ", rowmatch==" + rowmatch);
+    // console.log("i==" + i + ", rowmatch==" + rowmatch);
 
-    if (i == (cutoffRows + 1)) {
-        // entry += "\n  ...";
-    }
-    else {
-        // entry += "\n    Enter column loop A (" + (i + 1) + "/" + row.length + ")";
-    }
     for (j = 0; j < row.length; j++) {
-
-        console.log("i==" + i + ", j==" + j + ", rowmatch==" + rowmatch);
+        // console.log("i==" + i + ", j==" + j + ", rowmatch==" + rowmatch);
         col1 = parseInt(row[j]);
-        // if (j = (cutoffColumnsA + 1)) {
-        //     // entry += "\n\t...";
-        // }
-        // else if (j <= cutoffColumnsA) {
-        //     // entry += "\n\tEnter column loop B (" + (j + 1) + "/" + (row.length - (j + 1)) + ")";
-        // }
         for (k = (j + 1); k < row.length; k++) {
-            console.log("i==" + i + ", j==" + j + ", k==" + k + ", rowmatch==" + rowmatch);
+            // console.log("i==" + i + ", j==" + j + ", k==" + k + ", rowmatch==" + rowmatch);
             col2 = parseInt(row[k]);
             if (col1 % col2 == 0) {
-                console.log("Match A! j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ".");
+                // console.log("Match A! j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ".");
                 var div = col1 / col2;
                 sum += div;
                 rowmatch = true;
-                entry += "\n\t    Row " + i + ": match found at j == " + j + ", k == " + k + " with values col1 == " + col1 + ", col2 == " + col2 + ", div == " + div;
+                entry += "\n\tRow " + i + ": match A found! (j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ", div==" + div + ", sum==" + sum + ")";
                 // console.log("A");
             }
             else if (col2 % col1 == 0) {
-                console.log("Match B! j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ".");
+                // console.log("Match B! j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ".");
                 var div = col2 / col1;
                 sum += div;
                 rowmatch = true;
-                entry += "\n\t    Row " + i + ": match found at k == " + k + ", j == " + j + " with values col2 == " + col2 + ", col1 == " + col1 + ", div == " + div;
+                entry += "\n\tRow " + i + ": match B found! (k==" + k + ", j==" + j + ", col2==" + col2 + ", col1==" + col1 + ", div==" + div + ", sum==" + sum + ")";
                 // console.log("B");
             }
             if (rowmatch) {
-                // entry += "\n\t    Row " + i + ": column loop B break";
-                // console.log("C");
                 break;
             }
-            else if (k == (cutoffColumnsB + 1)) {
-                // entry += "\n\t    ...";
-                // console.log("D");
-            }
-            else if (k <= (cutoffColumnsB + (j + 1))) {
-                // entry += "\n\t    Row " + i + ": no match found at j == " + j + ", k == " + k + " with values col1 == " + col1 + ", col2 == " + col2;
-                // console.log("E");
-            }
         }
-        if (rowmatch) {
-            entry += "\n\t    Row " + i + ": completed, sum == " + sum;
-            // entry += "\n\t    Row " + i + ": column loop A break";
-            // console.log("F");
+        if (rowmatch) {          
             break;
         }
-    }
-    if (i <= cutoffRows) {
-        entry += "\n    Row " + i + ": sum == " + sum;
-        // entry += "\n    Column loop A completed.";
     }
     if (i <= cutoffRows) {
         output += entry;
     }
 }
+
 output += "\nRow loop completed. \n";
 output += "\n<div class=\"result\"><strong>Part 2 completed. The correct answer is ";
 output += "<span id=\"result\">" + sum + "</span>";
