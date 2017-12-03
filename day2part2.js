@@ -22,7 +22,7 @@ var cutoffRow = 4;
 var rowmatch = false;
 
 var output = "<pre>";
-output += "\nEnter row loop - " + input.length + " rounds.";
+output += "\nEnter input loop having " + input.length + " rounds.";
 for (i = 0; i < input.length; i++) {
     var entry = "";
     var row = input[i].split('\t');
@@ -69,7 +69,7 @@ for (i = 0; i < input.length; i++) {
     }
 }
 
-output += "\nRow loop completed. \n";
+output += "\nInput loop completed. \n";
 output += "\n<div class=\"result\"><strong>Part 2 completed. The correct answer is ";
 output += "<span id=\"result\">" + sum + "</span>";
 output += "<span id=\"mask\">[hover]</span>";

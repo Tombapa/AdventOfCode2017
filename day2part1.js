@@ -18,53 +18,58 @@ input[15] =  "5278	113	4427	569	5167	175	192	3903	155	1051	4121	5140	2328	203	56
 // console.dir(input);
 
 var checksum = 0;
-var cutoff = 2;
+var cutoffRow = 3;
+var cutoffColumn = 6;
 
 var output = "<pre>";
-output += "\nEnter row loop - " + input.length + " rounds.";
+output += "\nEnter input loop having " + input.length + " rows.";
 for (i = 0; i < input.length; i++) {
     var entry = "";
     var row = input[i].split('\t');
     var min = 0;
     var max = 0;
-    if (i == cutoff) {
-        entry += "\n  ...";
-    }
-    else {
-        entry += "\n  Enter column loop - " + row.length + " rounds.";
-    }
+    entry += "\n    Enter row loop " + i + " having " + row.length + " columns.";
     for (j = 0; j < row.length; j++) {  
         var cell = parseInt(row[j]);
         if (min == 0 && max == 0) {
-            if (i < cutoff) {
+            if (i < cutoffColumn) {
                 entry += "\n\tRow " + i + ": set initial min anx max value " + cell + " at column " + j;
             }
             min = cell;
             max = cell;
         }
         else if (cell < min) {
-            if (i < cutoff) {
+            if (j < cutoffColumn) {
                 entry += "\n\tRow " + i + ": new min value " + cell + " at column " + j;
+            }
+            else if (j == cutoffColumn) {
+                entry += "\n\t...";
             }
             min = cell;
         }
         else if (cell > max) {
-            if (i < cutoff) {
-                "\n\tRow " + i + ": new max value " + cell + " at column " + j;
+            if (j < cutoffColumn) {
+                entry += "\n\tRow " + i + ": new max value " + cell + " at column " + j;
+            }
+            else if (j == cutoffColumn) {
+                entry += "\n\t...";
             }
             max = cell;
         }
     }
     checksum += max - min;
-    if (i < cutoff) {
-        entry += "\n\tRow " + i + ": min == " + min + ", max == " + max + ", diff == " + (max - min) + ", checksum == " + checksum;
-        entry += "\n  Loop completed.";
+    if (i < cutoffRow) {
+        // entry += "\n\t<strong>Row " + i + " result: \n\tmin == " + min + ", max == " + max + ", diff == " + (max - min) + ", checksum == " + checksum + "</strong>";
+        entry += "\n    Row loop " + i + " result: \n    <strong>min == " + min + ", max == " + max + ", diff == " + (max - min) + ", checksum == " + checksum + "</strong>";
     }
-    if (i <= cutoff) {
+    if (i < cutoffRow) {
         output += entry;
     }
+    else if (i == cutoffRow) {
+        output += "\n    ...";
+    }
 }
-output += "\nLoop completed. \n";
+output += "\nInput loop completed. \n";
 output += "\n<div class=\"result\"><strong>Part 1 completed. The correct answer is ";
 output += "<span id=\"result\">" + checksum + "</span>";
 output += "<span id=\"mask\">[hover]</span>";
