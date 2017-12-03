@@ -18,7 +18,7 @@ input[15] =  "5278	113	4427	569	5167	175	192	3903	155	1051	4121	5140	2328	203	56
 // console.dir(input);
 
 var sum = 0;
-var cutoffRows = 3;
+var cutoffRow = 4;
 var rowmatch = false;
 
 var output = "<pre>";
@@ -42,7 +42,7 @@ for (i = 0; i < input.length; i++) {
                 var div = col1 / col2;
                 sum += div;
                 rowmatch = true;
-                entry += "\n\tRow " + i + ": match A found! (j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ", div==" + div + ", sum==" + sum + ")";
+                entry += "\n    Row " + i + ": match A found! \n\t(j==" + j + ", k==" + k + ", col1==" + col1 + ", col2==" + col2 + ", div==" + div + ", sum==" + sum + ")";
                 // console.log("A");
             }
             else if (col2 % col1 == 0) {
@@ -50,7 +50,7 @@ for (i = 0; i < input.length; i++) {
                 var div = col2 / col1;
                 sum += div;
                 rowmatch = true;
-                entry += "\n\tRow " + i + ": match B found! (k==" + k + ", j==" + j + ", col2==" + col2 + ", col1==" + col1 + ", div==" + div + ", sum==" + sum + ")";
+                entry += "\n    Row " + i + ": match B found! \n\t(k==" + k + ", j==" + j + ", col2==" + col2 + ", col1==" + col1 + ", div==" + div + ", sum==" + sum + ")";
                 // console.log("B");
             }
             if (rowmatch) {
@@ -61,8 +61,11 @@ for (i = 0; i < input.length; i++) {
             break;
         }
     }
-    if (i <= cutoffRows) {
+    if (i < cutoffRow) {
         output += entry;
+    }
+    else if (i == cutoffRow) {
+        output += "\n\t...";
     }
 }
 
