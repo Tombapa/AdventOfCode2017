@@ -48,8 +48,7 @@ cells[1] = new function() {
 }
 
 // Initial log
-output += "\n<strong>Start!</strong> I'm at <strong>index " + index + "</strong> and created cells[1] with values: \n    x==" + cells[1].x + ", y==" + cells[1].y + ", value=="+ cells[1].value + " (manhattanDistance==" + manhattanDistance + ")\n";
-
+output += "\n<strong>Start!</strong> I'm at <strong>index " + index + "</strong> having manhattanDistance==" + manhattanDistance + ", \n<em>and</em> created cells[" + index + "] with values x==" + cells[index].x + ", y==" + cells[index].y + ", value=="+ cells[index].value + "\n";
 
 function calculateCellValue(current) {
     var sum = 0;
@@ -115,15 +114,15 @@ try {
                 this.value = calculateCellValue(this);
 
                 // Log, if needed
-                if (index < 4) {
-                    output += "\nI'm at <strong>index " + index + "</strong> and created cells[1] with values: \n    x==" + cells[1].x + ", y==" + cells[1].y + ", value=="+ cells[1].value + " (manhattanDistance==" + manhattanDistance + ")\n";
+                if (index < 4 || (index > 19 && index < 23)) {
+                    output += "\nI'm at <strong>index " + index + "</strong> having manhattanDistance==" + manhattanDistance + ", \n<em>and</em> created cells[" + index + "] with values x==" + this.x + ", y==" + this.y + ", value=="+ this.value + "\n";
                 }
-                else if (index == 4) {
-                    output += "\n...";
+                else if (index == 4 || index == 23) {
+                    output += "\n...\n";
                 }
                 else if ((posX + posY > 1) && (manhattanDistance + posX + posY) % ((posX + posY + segmentStepsTaken) * 2) == 0) {
-                    output += "\nI'm at <strong>index " + index + "</strong> and created cells[1] with values: \n    x==" + cells[1].x + ", y==" + cells[1].y + ", value=="+ cells[1].value + " (manhattanDistance==" + manhattanDistance + ")\n";
-                    output += "\n...";
+                    output += "\nI'm at <strong>index " + index + "</strong> having manhattanDistance==" + manhattanDistance + ", \n<em>and</em> created cells[" + index + "] with values x==" + this.x + ", y==" + this.y + ", value=="+ this.value + "\n";
+                    output += "\n...\n";
                 }
             }
         }
@@ -148,7 +147,7 @@ try {
 
     output += "\n<strong>Hooray! I'm at index " + index + "!</strong>\n";
 
-    output += "\n<div class=\"result\"><strong>Part 1 completed. The correct answer is ";
+    output += "\n<div class=\"result\"><strong>Part 2 completed. The correct answer is ";
     output += "<span id=\"result\">" + correctAnswer + "</span>";
     output += "<span id=\"mask\">[hover]</span>";
     output += ".</strong></div> \n";
