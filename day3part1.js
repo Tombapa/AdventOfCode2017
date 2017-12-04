@@ -28,11 +28,11 @@ var output = "<pre>";
 try {
     while (index <= input) {
         // Log, if needed
-        if (index < 11) {
+        if (index < 8) {
             output += "\nI'm at <strong>index " + index + "</strong> with these values:";
             output += "\n    direction==" + direction.name + ", posX==" + posX + ", posY=="+ posY + ", manhattanDistance==" + manhattanDistance;
         }
-        else if (index == 11) {
+        else if (index == 8) {
             output += "\n...";
         }
         else if ((posX + posY > 1) && (manhattanDistance + posX + posY) % ((posX + posY + segmentStepsTaken) * 50) == 0) {
