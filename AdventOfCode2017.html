@@ -40,20 +40,50 @@ and is wrapped around the whole page content, except for the footer in this exam
         </div> 
         <div class="w3-container">
             <p>To ensure security, a valid passphrase must contain no duplicate words.</p>
-            <!-- <p>This seems really hard to me. I might not even try.</p> -->
-            <div id="day4part1"></div>
-            <script src="day4part1.js"></script>
+            <p><em>For this one, I had to learn a bit of Node.js for loading the input file. Then, input is split into lines i.e. word-based String arrays and each arrays is checked for duplicated words.</em></p>
+            <div id="day4part1">
+                <pre>
+node day4part1.js
+    validatePassphrase(1): It's true to say this one is valid.
+    validatePassphrase(2): It's true to say this one is valid.
+    validatePassphrase(3): It's true to say this one is valid.
+    ...
+    validatePassphrase(7): It's true to say this one is valid.
+        ** I've found a match! **
+    validatePassphrase(8): It's <strong>false</strong> to say this one is valid.
+    validatePassphrase(9): It's true to say this one is valid.
+    ...
+Whew, I think I'm done! I've validated 512 passphrases.
+
+<div class="result"><strong>Part 1 completed. The correct answer is <span id="result">466</span><span id="mask">[hover]</span></strong></div> 
+                </pre>
+            </div>
+            <!-- <script src="day4part1.js"></script> -->
             <div class="w3-row"></div>
         </div>
-        <!-- <div class="w3-container">
+        <div class="w3-container">
             <h5>Part Two</h5>
-        </div> -->
-        <!-- <div class="w3-container">
-            <p>Then, in the same allocation order as shown above, they store the sum of the values in all adjacent squares, including diagonals.</p>
-            <div id="day4part2"></div>
-            <script src="day4part2.js"></script>
+        </div>
+        <div class="w3-container">
+            <p>Now, a valid passphrase must contain no two words that are anagrams of each other - that is, a passphrase is invalid if any word's letters can be rearranged to form any other word in the passphrase.</p>
+            <p><em>As a new feature, before duplicate check Strings are splitted into sorted char arrays.</em></p>
+            <div id="day4part2">
+                <pre>
+node day4part2.js
+    validatePassphrase(1): It's true to say this one is valid.
+    validatePassphrase(2): It's true to say this one is valid.
+        ** I've found a match! **
+    validatePassphrase(3): It's false to say this one is valid.
+    validatePassphrase(4): It's true to say this one is valid.
+    ...
+Whew, I think I'm done! I've validated 512 passphrases.
+
+<div class="result"><strong>Part 2 completed. The correct answer is <span id="result">251</span><span id="mask">[hover]</span></strong></div> 
+                </pre>
+            </div>
+            <!-- <script src="day4part2.js"></script> -->
             <div class="w3-row"></div>
-        </div> -->
+        </div>
         <div class="w3-container">
             <div class="w3-row">
                 <div class="w3-col m8 s12"> 
@@ -61,7 +91,7 @@ and is wrapped around the whole page content, except for the footer in this exam
                 </div>
                 <div class="w3-col m4 w3-hide-small"> 
                     <p><span class="w3-padding-large w3-right">
-                        <!-- <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day4part1.js"><b>day4part1.js</b></a> -->
+                        <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day4part1.js"><b>day4part1.js</b></a>
                         <!-- , <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day4part2.js"><b>day4part2.js</b></a> -->
                     </span></p> 
                 </div> 

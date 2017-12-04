@@ -51,6 +51,12 @@ readLines(inputfile, func);
 function validatePassphrase(line) {
     // console.log("\tvalidatePassphrase(" + linenumber + ")");
     var duplicateFound = false;
+    
+    // Sort word-based char arrays to easy palindrome recognition
+    for (i = 0; i < line.length; i++) {
+        line[i] = line[i].split('').sort();
+    }
+
     // console.dir(line);
     for (j = 0; j < (line.length - 1); j++) {
         // console.log("  I'm comparing column " + j + "...");
