@@ -56,17 +56,21 @@ function validatePassphrase(line) {
     for (i = 0; i < line.length; i++) {
         line[i] = line[i].split('').sort();
     }
+    
 
     // console.dir(line);
     for (j = 0; j < (line.length - 1); j++) {
         // console.log("  I'm comparing column " + j + "...");
-        var strA = line[j];
+        var strA = line[j].join('');
         for (k = (j + 1); k < line.length; k++) {
             // console.log("    ... to column " + k);
-            var strB = line[k];
+            var strB = line[k].join('');
             // console.log("      [" + j + "][" + k + "]: " + strA + ", " + strB);
             if (!(strA < strB || strA > strB)) {
-                console.log("\t\t** I've found a match! **");
+                console.log("\t\t** I've found a match at indexes [" + j + "] and [" + k + "]" + "! **");
+                if (linenumber == 3 || linenumber == 8) {
+                    console.log("\t\t** strA==" + strA + ", strB==" + strB + " **");
+                }
                 duplicateFound = true;
                 break;
             }

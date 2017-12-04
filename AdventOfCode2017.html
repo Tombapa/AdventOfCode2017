@@ -40,15 +40,19 @@ and is wrapped around the whole page content, except for the footer in this exam
         </div> 
         <div class="w3-container">
             <p>To ensure security, a valid passphrase must contain no duplicate words.</p>
-            <p><em>For this one, I had to learn a bit of Node.js for loading the input file. Then, input is split into lines i.e. word-based String arrays and each arrays is checked for duplicated words.</em></p>
+            <p><em>For this one, I had to learn a bit of Node.js for loading the input file. Then, input is split into lines i.e. word-based String arrays, and each array is checked for duplicated words.</em></p>
             <div id="day4part1">
 <pre>node day4part1.js
     validatePassphrase(1): It's true to say this one is valid.
     validatePassphrase(2): It's true to say this one is valid.
+        ** 'caibh', <em>'nfuk'</em>, <em>'kfnu'</em>, **
+        ** 'llfdbz', 'uxjty', 'yxjut', 'jcea' **
     validatePassphrase(3): It's true to say this one is valid.
     ...
     validatePassphrase(7): It's true to say this one is valid.
         ** I've found a match! **
+        ** <strong>'bqs'</strong>, <strong>'bqs'</strong>, 'dbutvgf', 'mmzb', 'izpyud', **
+        ** 'rap', 'izpyud', 'xlzeb', 'mnj', 'hjncs' **
     validatePassphrase(8): It's <strong>false</strong> to say this one is valid.
     validatePassphrase(9): It's true to say this one is valid.
     ...
@@ -64,14 +68,21 @@ Whew, I think I'm done! I've validated 512 passphrases.
         </div>
         <div class="w3-container">
             <p>Now, a valid passphrase must contain no two words that are anagrams of each other - that is, a passphrase is invalid if any word's letters can be rearranged to form any other word in the passphrase.</p>
-            <p><em>As a new feature, before duplicate check Strings are splitted into sorted char arrays.</em></p>
+            <p><em>As a new feature, each String is splitted and sorted into char array before duplicate check.</em></p>
             <div id="day4part2">
 <pre>node day4part2.js
     validatePassphrase(1): It's true to say this one is valid.
     validatePassphrase(2): It's true to say this one is valid.
         ** I've found a match! **
-    validatePassphrase(3): It's false to say this one is valid.
+        ** I've found a match at indexes [1] and [2]! **
+        ** strA==<strong>fknu</strong>, strB==<strong>fknu</strong> **
+    validatePassphrase(3): It's <strong>false</strong> to say this one is valid.
     validatePassphrase(4): It's true to say this one is valid.
+    ...
+    validatePassphrase(7): It's true to say this one is valid.
+        ** I've found a match at indexes [0] and [1]! **
+        ** strA==<strong>bqs</strong>, strB==<strong>bqs</strong> **
+    validatePassphrase(8): It's <strong>false</strong> to say this one is valid.
     ...
 Whew, I think I'm done! I've validated 512 passphrases.
 

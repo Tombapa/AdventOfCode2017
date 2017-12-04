@@ -51,6 +51,9 @@ readLines(inputfile, func);
 function validatePassphrase(line) {
     // console.log("\tvalidatePassphrase(" + linenumber + ")");
     var duplicateFound = false;
+    if (linenumber == 3 || linenumber == 8) {
+        console.log(line);
+    }
     // console.dir(line);
     for (j = 0; j < (line.length - 1); j++) {
         // console.log("  I'm comparing column " + j + "...");
