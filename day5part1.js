@@ -1,13 +1,15 @@
 var fs = require('fs');
-var input = [];
+var list = [];
 var linenumber = 0;
+var stepsTaken = 0;
+var foundMyWayOut = false;
 
-function readInputFile(input, lineProcessFunction) {
-    console.log("readInputFile(input, lineProcessFunction): start.");
+function readInputFile(inputFile, lineProcessFunction) {
+    console.log("readInputFile(inputFile, " + lineProcessFunction + "): start.");
     var remaining = '';
     try {
-        input.on('data', function(data) {
-            console.log("readInputFile(input, lineProcessFunction).input.on('data', function(data)).");
+        inputFile.on('data', function(data) {
+            console.log("readInputFile(inputFile, lineProcessFunction).inputFile.on('data', function(data)).");
             remaining += data;
             var index = remaining.indexOf('\n');
             var last  = 0;
@@ -21,31 +23,33 @@ function readInputFile(input, lineProcessFunction) {
         });
     }
     catch (e) {
-        console.log("** readInputFile(input, lineProcessFunction): Epic fail at input.on('data', function(data)). **\n" + e);
+        console.log("** readInputFile(inputFile, lineProcessFunction): Epic fail at inputFile.on('data', function(data)). **\n" + e);
     }
     
     try {
-        input.on('end', function() {
+        inputFile.on('end', function() {
             if (remaining.length > 0) {
+                console.log("readInputFile(inputFile, lineProcessFunction).inputFile.on('end, function()): remaining=='" + remaining + "'.");
                 lineProcessFunction(remaining);
             }
-            console.log("readInputFile(input, lineProcessFunction).input.on('end, function()): moving to afterReading().");
+            console.log("readInputFile(inputFile, lineProcessFunction).inputFile.on('end, function()): moving to afterReading().");
             afterReading();
         });
     }
     catch (e) {
-        console.log("** readInputFile(input, lineProcessFunction): Epic fail at input.on('end, function()). **\n" + e);
+        console.log("** readInputFile(inputFile, lineProcessFunction): Epic fail at inputFile.on('end, function()). **\n" + e);
     }
     
-    // console.log("readInputFile(input, lineProcessFunction): the very end, there's nothing to see here.");
+    // console.log("readInputFile(inputFile, lineProcessFunction): the very end, there's nothing to see here.");
 }
+
 
 
 function processLine(data) {
     linenumber++;
     // console.log("processLine(data): start, linenumber==" + linenumber + ".");
     try {
-        input[linenumber] = parseInt(data);
+        list[linenumber] = parseInt(data);
         // console.log(input[linenumber]);
     }
     catch (e) {
@@ -56,13 +60,42 @@ function processLine(data) {
 
 
 function afterReading() {
-    console.log("afterReading(): I have now read " + inputFileName + ", " + linenumber + " lines to be exact.");
+    console.log(
+        "afterReading(): I have now read " + inputFileName + ", " + linenumber + " lines to be exact "
+        + "(list[" + linenumber + "] == " + list[linenumber] + ")."
+    );
     // console.dir(input);
     // remember: input[0] is empty, as we started from line 1.
+
+    // determine the first step
+    jump(0); // TODO
 }
 
 
-console.log("\nday5part1.js: Hello, World!\n");
+function jump(index) {
+    // Take the step
+    stepsTaken++;
+    // Are we there yet?
+    if (!index || index < 1 || index > linenumber) {
+        console.log("jump(" + index + "): I'm outside the list!"); // TODO: values
+        if (!index) {
+            foundMyWayOut = true;
+        }
+        gotOut();
+    } else {
+        console.log("jump(" + index + "): I'm still on the list!");
+        // do the magic
+        // then
+        jump(null); // TODO
+    }
+}
+
+
+function gotOut() {
+    console.log("gotOut(): Whew, finally! I took " + stepsTaken + " steps.");
+}
+
+console.log("\nday5part1.js: Hello, World!");
 var inputFileName = "attachments\\day5input.txt";
 var inputFile = fs.createReadStream(inputFileName);
 console.log("day5part1.js: About to read " + inputFileName + ".");
