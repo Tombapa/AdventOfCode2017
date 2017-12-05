@@ -3,6 +3,7 @@ var input = [];
 var linenumber = 0;
 var uniquePassphrases = 0;
 
+
 function readLines(input, func) {
     // var linenumber = 0;
     var remaining = '';
@@ -29,6 +30,7 @@ function readLines(input, func) {
     });
 }
 
+
 function func(data) {
     //   console.log('Line: ' + data);
     // input[linenumber] == data.split('\t');
@@ -43,9 +45,6 @@ function func(data) {
     }
     
 }
-
-var inputfile = fs.createReadStream('attachments\\day4input.txt');
-readLines(inputfile, func);
 
 
 function validatePassphrase(line) {
@@ -83,3 +82,6 @@ function validatePassphrase(line) {
     return !duplicateFound;
 }
 
+
+var inputfile = fs.createReadStream('attachments\\day4input.txt');
+readLines(inputfile, func);
