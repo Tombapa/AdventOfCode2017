@@ -65,8 +65,7 @@ function processLine(data) {
 
 function afterReading() {
     console.log(
-        "afterReading(): I have now read " + inputFileName + ", " + linenumber + " lines to be exact "
-        + "(list[" + linenumber + "] == " + list[linenumber] + ")."
+        "afterReading(): I have now read lines 1-" + linenumber + ", list[" + linenumber + "]==" + list[linenumber] + "."
     );
     cpuOnTheMove();
 }
