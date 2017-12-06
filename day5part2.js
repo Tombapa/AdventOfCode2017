@@ -76,7 +76,7 @@ function cpuOnTheMove() {
     currentIndex = 1;
     // console.log("cpuOnTheMove(): I'm on the move, currently at " + currentIndex + " having list[" + currentIndex + "]==" + list[currentIndex] + "!");
     
-    while (stepsTaken < 500000 && !foundMyWayOut) {
+    while (stepsTaken < 50000000 && !foundMyWayOut) {
         // console.log("cpuOnTheMove(): I'm taking step " + stepsTaken + " to at " + currentIndex + " having list[" + currentIndex + "]==" + list[currentIndex] + "!");
         currentIndex = nextIndex;
         nextIndex = null;
@@ -105,7 +105,12 @@ function jumpFrom(index) {
     // console.dir(images);
 
     nextIndex = index + list[index];
-    list[index]++;
+    if(list[index] >= 3) {
+        list[index]--;
+    }
+    else {
+        list[index]++;
+    }
 
     // Log
     if (
@@ -115,7 +120,7 @@ function jumpFrom(index) {
 
     ) {
         if (stepsTaken != stepLogLimit) {
-            console.log("jumpFrom(" + index + "): Outcome:  list[" + index + "]==" + list[index] + ", nextIndex==" + nextIndex + ".");
+            // console.log("jumpFrom(" + index + "): Outcome: list[" + index + "]==" + list[index] + ", nextIndex==" + nextIndex + ".");
         }
         else if (stepsTaken == stepLogLimit) {
             console.log("jumpFrom(" + index + "): ... ");
@@ -180,9 +185,9 @@ function jumpFrom(index) {
 // }
 
 
-console.log("\nday5part1.js: Hello, World!");
+console.log("\nday5part2.js: Hello, World!");
 var inputFileName = "attachments\\day5input.txt";
 var inputFile = fs.createReadStream(inputFileName);
-console.log("day5part1.js: About to read " + inputFileName + ".");
+console.log("day5part2.js: About to read " + inputFileName + ".");
 
 readInputFile(inputFile, processLine);
