@@ -74,7 +74,7 @@ function afterReading() {
 
 function cpuOnTheMove() {
     currentIndex = 1;
-    // console.log("cpuOnTheMove(): I'm on the move, currently at " + currentIndex + " having list[" + currentIndex + "]==" + list[currentIndex] + "!");
+    console.log("cpuOnTheMove(): I'm on the move again!");
     
     while (stepsTaken < 50000000 && !foundMyWayOut) {
         // console.log("cpuOnTheMove(): I'm taking step " + stepsTaken + " to at " + currentIndex + " having list[" + currentIndex + "]==" + list[currentIndex] + "!");
@@ -94,15 +94,7 @@ function cpuOnTheMove() {
 
 
 function jumpFrom(index) {
-    
-    // console.log("jumpFrom(" + index + "): Step " + stepsTaken + ". I'm at list[" + index + "]==" + list[index] + ".");
-
-    // var images = [];
-    // images[0] = {type: "pre", name:"index", value: index};
-    // images[1] = {type: "pre", name:"value", value: list[index]};
-    // images[2] = {type: "post", name:"index", value: (index + list[index])};
-    // images[3] = {type: "post", name:"value", value: (list[index] + 1)};
-    // console.dir(images);
+    var entry = "jumpFrom(" + index + "): Step " + stepsTaken + ". I'm at list[" + index + "]==" + list[index] + ". ";
 
     nextIndex = index + list[index];
     if(list[index] >= 3) {
@@ -115,16 +107,15 @@ function jumpFrom(index) {
     // Log
     if (
         stepsTaken <= stepLogLimit 
-        || stepsTaken % 999 == 0
-        || stepsTaken > 388615
+        || stepsTaken % 9999999 == 0
+        || stepsTaken == 388615
 
     ) {
-        if (stepsTaken != stepLogLimit) {
-            // console.log("jumpFrom(" + index + "): Outcome: list[" + index + "]==" + list[index] + ", nextIndex==" + nextIndex + ".");
+        entry += "Outcome: list[" + index + "]==" + list[index] + ", nextIndex==" + nextIndex + ".";
+        if (stepsTaken >= stepLogLimit) {
+            entry += "\n... ";
         }
-        else if (stepsTaken == stepLogLimit) {
-            console.log("jumpFrom(" + index + "): ... ");
-        }
+        console.log(entry);
     }
 
     stepsTaken++;
@@ -132,57 +123,11 @@ function jumpFrom(index) {
     // Are we there yet?
     if (!nextIndex || nextIndex < 1 || nextIndex > linenumber) {
         // Log and commit exit routine.
-        console.log("jump(" + index + "): I got out because nextIndex==" + nextIndex + ", and I only had to take " + stepsTaken + " steps."); 
+        console.log("jumpFrom(" + index + "): We're out, nextIndex==" + nextIndex + ".");
+        // console.log("And I only had to take " + stepsTaken + " steps."); 
         foundMyWayOut = true;
     }
 }
-
-// function jump(index) {
-//     // Are we there yet?
-//     if (!index || index < 1 || index > linenumber) {
-//         // Log and commit exit routine.
-//         console.log("jump(" + index + "): I won't take a step now as I'm already outside the list! index==" + index); 
-//         foundMyWayOut = true;
-//     } else {
-//         stepsTaken++;
-//         console.log("jump(" + index + "): Step " + stepsTaken + ". I'm at list[" + index + "]==" + list[index] + ".");
-//         // Take the step
-
-//         var images = [];
-//         images[0] = {type: "pre", name:"index", value: index};
-//         images[1] = {type: "pre", name:"value", value: list[index]};
-//         images[2] = {type: "post", name:"index", value: (index + list[index])};
-//         images[3] = {type: "post", name:"value", value: (list[index] + 1)};
-
-//         console.dir(images);
-
-//         // var preIndex = index;
-//         // var preValue = list[index];
-//         // var postIndex = preIndex + preValue;
-//         // var postValue = preValue++;
-
-
-
-
-//         nextIndex = index + list[index];
-//         list[index]++;
-        
-//         // Log
-//         if (
-//             stepsTaken <= stepLogLimit 
-//             || stepsTaken % 999 == 0
-//             || stepsTaken > 388615
-
-//         ) {
-//             if (stepsTaken != stepLogLimit) {
-//                 console.log("jump(" + index + "): Step " + stepsTaken + ". I increased list[" + index + "] value to " + list[index] + " and have also set a new value for nextIndex==" + nextIndex + ".");
-//             }
-//             else if (stepsTaken == stepLogLimit) {
-//                 console.log("jump(" + index + "): ... ");
-//             }
-//         }
-//     }
-// }
 
 
 console.log("\nday5part2.js: Hello, World!");

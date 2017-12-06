@@ -29,6 +29,97 @@ and is wrapped around the whole page content, except for the footer in this exam
 
 <!-- Blog entries -->
 <div class="w3-col l8 s12">
+
+
+        <!-- Blog entry -->
+        <div class="w3-card-4 w3-margin w3-white">
+                <!-- <img src="img\malminkartano-full.jpg" alt="Malminkartano" style="width:100%" id="day2post" /> -->
+                <div class="bgimage" id="day5post" style="background-image: url('https://tombapa.github.io/AdventOfCode2017/img/newquay-wide.jpg');"></div>    
+                <div class="w3-container">
+                    <h3><b>DAY 5: A MAZE OF TWISTY TRAMPOLINES, ALL ALIKE </b> <span class="w3-opacity">Dec 5, 2017</span></h3>
+                    <!-- <h5></h5> -->
+                </div> 
+                <div class="w3-container">
+                    <p>An urgent interrupt arrives from the CPU: it's trapped in a maze of jump instructions, and it would like assistance from any programs with spare cycles to help find the exit</p>
+                    <div id="day5part1">
+<pre>day5part1.js: Hello, World!
+day5part1.js: About to read attachments\day5input.txt.
+readInputFile(inputFile, processLine): start.
+readInputFile(inputFile, processLine).inputFile.on('data', function(data)).
+readInputFile(inputFile, processLine).inputFile.on('end, function()): remaining=='-1074'.
+readInputFile(inputFile, processLine).inputFile.on('end, function()): moving to afterReading().
+afterReading(): I have now read attachments\day5input.txt, 1090 lines to be exact (list[1090] == -1074).
+cpuOnTheMove(): I'm on the move!
+jumpFrom(1): Step 0. I'm at list[1]==2. Outcome: list[1]==3, nextIndex==3.
+jumpFrom(3): Step 1. I'm at list[3]==2. Outcome: list[3]==3, nextIndex==5.
+jumpFrom(5): Step 2. I'm at list[5]==-2. Outcome: list[5]==-1, nextIndex==3.
+jumpFrom(3): Step 3. I'm at list[3]==3. Outcome: list[3]==4, nextIndex==6.
+jumpFrom(6): Step 4. I'm at list[6]==1. Outcome: list[6]==2, nextIndex==7.
+...
+jumpFrom(364): Step 99999. I'm at list[364]==-68. Outcome: list[364]==-67, nextIndex==296.
+...
+jumpFrom(616): Step 199998. I'm at list[616]==-472. Outcome: list[616]==-471, nextIndex==144.
+...
+jumpFrom(675): Step 299997. I'm at list[675]==66. Outcome: list[675]==67, nextIndex==741.
+...
+jump(614): We're out, nextIndex==1091.
+cpuOnTheMove(): Whew, I finally got out!
+
+<div class="result"><strong>Part 1 completed. The correct answer is <span id="result">388611</span><span id="mask">[hover]</span>steps.</strong></div></pre>
+                    </div>
+                    <!-- <script src="day4part1.js"></script> -->
+                    <div class="w3-row"></div>
+                </div>
+                <div class="w3-container">
+                    <h5>Part Two</h5>
+                </div>
+                <div class="w3-container">
+                    <p>Now, a valid passphrase must contain no two words that are anagrams of each other - that is, a passphrase is invalid if any word's letters can be rearranged to form any other word in the passphrase.</p>
+                    <p><em>As a new feature, each String is splitted and sorted into char array before duplicate check.</em></p>
+                    <div id="day5part2">
+<pre>day5part2.js: Hello, World!
+day5part2.js: About to read attachments\day5input.txt.
+readInputFile(inputFile, processLine): start.
+readInputFile(inputFile, processLine).inputFile.on('data', function(data)).
+readInputFile(inputFile, processLine).inputFile.on('end, function()): remaining=='-1074'.
+readInputFile(inputFile, processLine).inputFile.on('end, function()): moving to afterReading().
+afterReading(): I have now read attachments\day5input.txt, 1090 lines to be exact (list[1090] == -1074).
+cpuOnTheMove(): I'm on the move again!
+jumpFrom(1): Step 0. I'm at list[1]==2. Outcome: list[1]==3, nextIndex==3.
+jumpFrom(3): Step 1. I'm at list[3]==2. Outcome: list[3]==3, nextIndex==5.
+jumpFrom(5): Step 2. I'm at list[5]==-2. Outcome: list[5]==-1, nextIndex==3.
+jumpFrom(3): Step 3. I'm at list[3]==3. Outcome: list[3]==2, nextIndex==6.
+jumpFrom(6): Step 4. I'm at list[6]==1. Outcome: list[6]==2, nextIndex==7.
+...
+jumpFrom(224): Step 388615. I'm at list[224]==3. Outcome: list[224]==2, nextIndex==227.
+...
+jumpFrom(549): Step 9999999. I'm at list[549]==3. Outcome: list[549]==2, nextIndex==552.
+...
+jumpFrom(833): Step 19999998. I'm at list[833]==2. Outcome: list[833]==3, nextIndex==835.
+...
+jumpFrom(1088): We're out, nextIndex==1091.
+cpuOnTheMove(): Whew, I finally got out!
+        
+<div class="result"><strong>Part 2 completed. The correct answer is <span id="result">27763113</span><span id="mask">[hover]</span>steps.</strong></div></pre>
+                    </div>
+                    <!-- <script src="day4part2.js"></script> -->
+                    <div class="w3-row"></div>
+                </div>
+                <div class="w3-container">
+                    <div class="w3-row">
+                        <div class="w3-col m8 s12"> 
+                            <p><a href="http://adventofcode.com/2017/day/5"><button class="w3-button w3-padding-large w3-white w3-border"><b>DAY 5 PUZZLE »</b></button></a></p> 
+                        </div>
+                        <div class="w3-col m4 w3-hide-small"> 
+                            <p><span class="w3-padding-large w3-right">
+                                <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day5part1.js"><b>day5part1.js</b></a>
+                                , <a href="https://github.com/Tombapa/AdventOfCode2017/blob/master/day5part2.js"><b>day5part2.js</b></a>
+                            </span></p> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+
     
     <!-- Blog entry -->
     <div class="w3-card-4 w3-margin w3-white">
