@@ -13,8 +13,9 @@ var redistributions = 0;
 var matchingConfigurationIndex = null;
 areaHistory[0] = area.slice();
 
-console.dir(area);
-console.log(area.reduce((a, b) => a + b, 0));
+var output = "<pre>Start.";
+
+report();
 
 while (
         notInLoop 
@@ -25,17 +26,26 @@ while (
 }
 
 if (notInLoop) {
-    console.log("I'm was interrupted after " + redistributions + " redistributions!");    
+    console.log("I'm was interrupted after " + redistributions + " redistributions!");
+    output += "\nI'm was interrupted after " + redistributions + " redistributions!"
+    report();
 }
 else {
+    // report();
     console.log("I'm so totally done! You'd probably want to know how I did?");
     console.log("I reallocated " + redistributions + " times. The matching configuration was found at areaHistory[" + matchingConfigurationIndex + "].");
-    console.dir(area);
+    output += "\n<strong>I'm so totally done! You'd probably want to know how I did?</strong>";
+    
+    
+    output += "\n\n<div class=\"result\"><strong>Part 1 completed. The correct answer is ";
+    output += "<span id=\"result\">" + redistributions + "</span>";
+    output += "<span id=\"mask\">[hover]</span>";
+    output += " redistribution cycles.</strong></div> \n";
+    output += "</pre>";
+    document.getElementById("day6part1").innerHTML = output;
 }
 
 
-console.dir(area);
-console.log(area.reduce((a, b) => a + b, 0));
 
 
 // Functions
@@ -79,6 +89,8 @@ function redistribute() {
     // The magic is now done.
     if (areaIsDuplicated(redistributions)) {
         console.log("redistribute(): I've been told I'm in loop.");
+        output += "\nredistribute(): I've been told I'm in loop.";
+        report();
         notInLoop = false;
     }
 }
@@ -103,10 +115,21 @@ function areaIsDuplicated(currentIndex) {
         }
         if (!controlDoesNotMatch) {
             console.log("areaIsDuplicated(" + currentIndex + "): I didn't find any mismatches while comparing redistribution " + currentIndex + " to other configurations in areaHistory[].");
+            output += "\nareaIsDuplicated(" + currentIndex + "): Match found!";
             matchingConfigurationIndex = i;
             return true;
         }
     }
     return false;
     
+}
+
+
+function report() {
+    // Console
+    console.log("report(): Report! Sum of current area blocks: " + area.reduce((a, b) => a + b, 0)) + ". \nUp next: console.dir(area).";
+    console.dir(area);
+    // Output to <pre>
+    output += "\n<strong>Report!</strong> Sum of current area blocks: " + area.reduce((a, b) => a + b, 0) + ".";
+    output += "\nCurrent area == " + area + ".";
 }
