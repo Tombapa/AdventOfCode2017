@@ -7,29 +7,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="header-images.css">
 <link rel="stylesheet" href="reveal-on-hover.css">
-<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-<meta name="theme-color" content="#ffffff">
-
-<style>
-body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;}
-a {text-decoration: none;}
-a:hover {text-decoration: underline;}
-</style>
 
 <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="img/apple-icon-60x60.png">
@@ -48,6 +25,12 @@ a:hover {text-decoration: underline;}
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
+
+<style>
+    body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;}
+    a {text-decoration: none;}
+    a:hover {text-decoration: underline;}
+</style>
 
 </head>
 
@@ -80,33 +63,8 @@ and is wrapped around the whole page content, except for the footer in this exam
                 </div> 
                 <div class="w3-container">
                     <p>An urgent interrupt arrives from the CPU: it's trapped in a maze of jump instructions, and it would like assistance from any programs with spare cycles to help find the exit</p>
-                    <div id="day5part1">
-<pre>day5part1.js: Hello, World!
-day5part1.js: About to read attachments\day5input.txt.
-readInputFile(inputFile, processLine): start.
-readInputFile(inputFile, processLine).inputFile.on('data', function(data)).
-readInputFile(inputFile, processLine).inputFile.on('end, function()): remaining=='-1074'.
-readInputFile(inputFile, processLine).inputFile.on('end, function()): moving to afterReading().
-afterReading(): I have now read lines 1-1090, list[1090]==-1074.
-cpuOnTheMove(): I'm on the move!
-jumpFrom(1): Step 0. I'm at list[1]==2. Outcome: list[1]==3, nextIndex==3.
-jumpFrom(3): Step 1. I'm at list[3]==2. Outcome: list[3]==3, nextIndex==5.
-jumpFrom(5): Step 2. I'm at list[5]==-2. Outcome: list[5]==-1, nextIndex==3.
-jumpFrom(3): Step 3. I'm at list[3]==3. Outcome: list[3]==4, nextIndex==6.
-jumpFrom(6): Step 4. I'm at list[6]==1. Outcome: list[6]==2, nextIndex==7.
-...
-jumpFrom(364): Step 99999. I'm at list[364]==-68. Outcome: list[364]==-67, nextIndex==296.
-...
-jumpFrom(616): Step 199998. I'm at list[616]==-472. Outcome: list[616]==-471, nextIndex==144.
-...
-jumpFrom(675): Step 299997. I'm at list[675]==66. Outcome: list[675]==67, nextIndex==741.
-...
-jump(614): We're out, nextIndex==1091.
-cpuOnTheMove(): Whew, I finally got out!
-
-<div class="result"><strong>Part 1 completed. The correct answer is <span id="result">388611</span><span id="mask">[hover]</span> steps.</strong></div></pre>
-                    </div>
-                    <!-- <script src="day4part1.js"></script> -->
+                    <div id="day5part1"></div>
+                    <script src="attachments\day5part1output.js"></script>
                     <div class="w3-row"></div>
                 </div>
                 <div class="w3-container">
