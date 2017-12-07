@@ -8,12 +8,17 @@ var foundMyWayOut = false;
 
 var stepLogLimit = 4;
 
+var output = "<pre>";
+
 function readInputFile(inputFile, processLine) {
     console.log("readInputFile(inputFile, processLine): start.");
+    output += "readInputFile(inputFile, processLine): start.\\n\\\n"
     var remaining = '';
     try {
         inputFile.on('data', function(data) {
             console.log("readInputFile(inputFile, processLine).inputFile.on('data', function(data)).");
+            output += "readInputFile(inputFile, processLine).inputFile.on('data', function(data)).\\n\\\n"
+
             remaining += data;
             var index = remaining.indexOf('\n');
             var last  = 0;
@@ -27,21 +32,25 @@ function readInputFile(inputFile, processLine) {
         });
     }
     catch (e) {
-        console.log("** readInputFile(inputFile, processLine): Epic fail at inputFile.on('data', function(data)). **\n" + e);
+        console.log("\n** readInputFile(inputFile, processLine): Epic fail at inputFile.on('data', function(data)). **\n" + e);
+        output += "\\n\\\n** readInputFile(inputFile, processLine): Epic fail at inputFile.on('data', function(data)). **\\n\\\n" + e + "\\n\\\n";
     }
     
     try {
         inputFile.on('end', function() {
             if (remaining.length > 0) {
-                console.log("readInputFile(inputFile, processLine).inputFile.on('end, function()): remaining=='" + remaining + "'.");
+                console.log("readInputFile(inputFile, processLine).inputFile.on('end', function()): remaining=='" + remaining + "'.");
+                output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): remaining=='" + remaining + "'.\\n\\\n";
                 processLine(remaining);
             }
-            console.log("readInputFile(inputFile, processLine).inputFile.on('end, function()): moving to afterReading().");
+            console.log("readInputFile(inputFile, processLine).inputFile.on('end', function()): moving to afterReading().");
+            output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): moving to afterReading().\\n\\\n";
             afterReading();
         });
     }
     catch (e) {
-        console.log("** readInputFile(inputFile, processLine): Epic fail at inputFile.on('end, function()). **\n" + e);
+        console.log("\n** readInputFile(inputFile, processLine): Epic fail at inputFile.on('end', function()). **\n" + e);
+        output += "\\n\\\n** readInputFile(inputFile, processLine): Epic fail at inputFile.on('end', function()). **\\n\\\n" + e + "\\n\\\n";
     }
     
     // console.log("readInputFile(inputFile, processLine): the very end, there's nothing to see here.");
@@ -57,25 +66,26 @@ function processLine(data) {
         // console.log(input[linenumber]);
     }
     catch (e) {
-        console.log("** processLine(data): Epic fail at processLine(data) with data==" + data + " at linenumber==" + linenumber + ". **\n" + e);
+        console.log("** processLine(data): Epic fail at processLine(data) with data==" + data + " at linenumber==" + linenumber + ". **\\n\\\n" + e);
+        output += "** processLine(data): Epic fail at processLine(data) with data==" + data + " at linenumber==" + linenumber + ". **\\n\\\n" + e + "\\n\\\n";
     }
     // console.log("processLine(data): end, linenumber==" + linenumber + ".");
 }
 
 
 function afterReading() {
-    console.log(
-        "afterReading(): I have now read lines 1-" + linenumber + ", list[" + linenumber + "]==" + list[linenumber] + "."
-    );
+    console.log("afterReading(): I have now read lines 1-" + linenumber + ", list[" + linenumber + "]==" + list[linenumber] + ".");
+    output += "afterReading(): I have now read lines 1-" + linenumber + ", list[" + linenumber + "]==" + list[linenumber] + ".\\n\\\n";
     cpuOnTheMove();
 }
 
 
 function cpuOnTheMove() {
     currentIndex = 1;
-    console.log("cpuOnTheMove(): I'm on the move again!");
+    console.log("cpuOnTheMove(): I'm on the move!");
+    output += "cpuOnTheMove(): I'm on the move!\\n\\\n";
     
-    while (stepsTaken < 50000000 && !foundMyWayOut) {
+    while (stepsTaken < 500000000 && !foundMyWayOut) {
         // console.log("cpuOnTheMove(): I'm taking step " + stepsTaken + " to at " + currentIndex + " having list[" + currentIndex + "]==" + list[currentIndex] + "!");
         currentIndex = nextIndex;
         nextIndex = null;
@@ -85,14 +95,24 @@ function cpuOnTheMove() {
 
     if (foundMyWayOut) {
         console.log("cpuOnTheMove(): Whew, I finally got out! I took " + stepsTaken + " steps."); 
+        output += "cpuOnTheMove(): Whew, I finally got out!\\n\\\n";
+        output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 1 completed. The correct answer is ";
+        output += "<span id=\\\"result\\\">" + stepsTaken + "</span>";
+        output += "<span id=\\\"mask\\\">[hover]</span>";
+        output += " steps.</strong></div>";
+        output += "</pre>\";\n";
     }
     else {
         console.log("cpuOnTheMove(): I was interrupted after " + stepsTaken + " steps."); 
+        output += "cpuOnTheMove(): I was interrupted after " + stepsTaken + " steps.</pre>\";\n";
     }
+    // document.getElementById("day5part2").innerHTML = output;
+    writeOutputFile(output, "day5part2");
 }
 
 
 function jumpFrom(index) {
+    
     var entry = "jumpFrom(" + index + "): Step " + stepsTaken + ". I'm at list[" + index + "]==" + list[index] + ". ";
 
     nextIndex = index + list[index];
@@ -112,9 +132,10 @@ function jumpFrom(index) {
     ) {
         entry += "Outcome: list[" + index + "]==" + list[index] + ", nextIndex==" + nextIndex + ".";
         if (stepsTaken >= stepLogLimit) {
-            entry += "\n... ";
+            entry += "\\n\\\n... ";
         }
         console.log(entry);
+        output += entry + "\\n\\\n";
     }
 
     stepsTaken++;
@@ -123,15 +144,30 @@ function jumpFrom(index) {
     if (!nextIndex || nextIndex < 1 || nextIndex > linenumber) {
         // Log and commit exit routine.
         console.log("jumpFrom(" + index + "): We're out, nextIndex==" + nextIndex + ".");
+        output += "jumpFrom(" + index + "): We're out, nextIndex==" + nextIndex + ".\\n\\\n";
         // console.log("And I only had to take " + stepsTaken + " steps."); 
         foundMyWayOut = true;
     }
 }
 
 
+function writeOutputFile(outputTxt, elementId) {
+    var outputJS = "var output = \""; 
+    outputJS += outputTxt;
+    // outputJS += "\\n\\\n";
+    outputJS += "\ndocument.getElementById(\"" + elementId + "\").innerHTML = output;";
+
+    fs.writeFile("attachments\\" + elementId + "output.js", outputJS, function (err) {
+        if (err) throw err;
+        console.log("writeOutputFile(): Saved!");
+    });
+}
+
 console.log("\nday5part2.js: Hello, World!");
+output += "\\n\\\nday5part2.js: Hello, World!\\n\\\n";
 var inputFileName = "attachments\\day5input.txt";
 var inputFile = fs.createReadStream(inputFileName);
 console.log("day5part2.js: About to read " + inputFileName + ".");
+output += "day5part2.js: About to read " + inputFileName.replace("\\", "\\\\") + ".\\n\\\n";
 
 readInputFile(inputFile, processLine);

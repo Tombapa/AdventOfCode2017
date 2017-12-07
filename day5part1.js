@@ -104,7 +104,7 @@ function cpuOnTheMove() {
     }
     else {
         console.log("cpuOnTheMove(): I was interrupted after " + stepsTaken + " steps."); 
-        output += "cpuOnTheMove(): I was interrupted after " + stepsTaken + " steps.</pre>\";\\n\\\n";
+        output += "cpuOnTheMove(): I was interrupted after " + stepsTaken + " steps.</pre>\";\n";
     }
     // document.getElementById("day5part1").innerHTML = output;
     writeOutputFile(output, "day5part1");
