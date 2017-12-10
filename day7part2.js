@@ -11,7 +11,7 @@ var levelCount = 0;
 var reportLogCutoff = 7;
 
 var bottomProgram = null;
-var unbalancedProgram = null;
+var destabilizingProgram = null;
 
 
 function readInputFile(inputFile, processLine) {
@@ -95,17 +95,18 @@ function processLine(data) {
 
 
 function buildPrograms() {
+    console.log("buildPrograms(): begin!");
     for (index = 1; index < reports.length; index++) {
         var currentReport = reports[index];
         // console.log("buildPrograms(): currentReport == '" + currentReport + "'.");
-        var currentChildren = null;
+        var currentChildrenNames = null;
         if (currentReport[3] !== undefined) {
-            currentChildren = currentReport.slice(3);
+            currentChildrenNames = currentReport.slice(3);
         }
         var currentProgram = null;
         var existingProgramNumber = findIndexByName(reports[index][0]);
         if (existingProgramNumber == null) {         
-            currentProgram = new Program(programnumber, currentReport[0], currentReport[1], currentChildren, null);
+            currentProgram = new Program(programnumber, currentReport[0], currentReport[1], currentChildrenNames, null);
             programs[programnumber] = currentProgram;
             // console.log("buildPrograms(): Added a new independent program '" + currentProgram.name + "'.");
             // console.dir(currentProgram);
@@ -115,25 +116,27 @@ function buildPrograms() {
         else {
             currentProgram = programs[existingProgramNumber];
             currentProgram.weight = currentReport[1];
-            currentProgram.children = currentChildren;
+            currentProgram.children = currentChildrenNames;
             // console.log("buildPrograms(): Found an existing program '" + currentProgram.name + "', updated weight and children.");
             // console.dir(currentProgram);
             // console.log("buildPrograms(): currentProgram == " + currentProgram.toString());
         }
     
-        if (currentChildren != null && currentChildren.length > 0) {    // '->'
+        if (currentChildrenNames != null && currentChildrenNames.length > 0) {    
+            currentProgram.children = [];
             var parentName = currentReport[0];
             // console.log("buildPrograms(): Adding new childs for parent '" + parentName + "'.");
-            // console.dir(currentChildren);
-            for (c = 0; c < currentChildren.length; c++) {
-                var childName = currentChildren[c];
-                // console.log("buildPrograms(): c==" + c + ", the child is (or will be) called currentChildren[" + c + "]=='" + childName + "'.");
+            // console.dir(currentChildrenNames);
+            for (c = 0; c < currentChildrenNames.length; c++) {
+                var childName = currentChildrenNames[c];
+                // console.log("buildPrograms(): c==" + c + ", the child is (or will be) called currentChildrenNames[" + c + "]=='" + childName + "'.");
                 try {
                     var currentChild = null;
                     var existingChildProgramNumber = findIndexByName(childName);
                     if (existingChildProgramNumber == null) {
                         currentChild = new Program(programnumber, childName, null, null, parentName);
                         programs[programnumber] = currentChild;
+                        currentProgram.children[c] = currentChild;
                         // console.log("buildPrograms(): c==" + c + ". A new child is born with name=='" + currentChild.name + "').");
                         // console.dir(currentChild);
                         // console.log("buildPrograms(): currentChild == " + currentChild);
@@ -142,10 +145,13 @@ function buildPrograms() {
                     else {
                         currentChild = programs[existingChildProgramNumber];
                         currentChild.parentName = parentName; 
+                        currentChild.parent = currentProgram;
+                        currentProgram.children[c] = currentChild;
                         // console.log("buildPrograms(): c==" + c + ". I was pointed an existing child with number " + existingChildProgramNumber + " (name=='" + currentChild.name + "').");
                         // console.dir(currentChild);
                         // console.log("buildPrograms(): currentChild == " + currentChild);
-                    }   
+                    } 
+                    currentChild.setCombinedWeight();  
                 }
                 catch (e) {
                     console.log("** buildPrograms(data): Epic fail at reports[" + i + "] with currentReport=='" + currentReport + "'. **\n" + e);
@@ -153,6 +159,9 @@ function buildPrograms() {
                     needToStop = true;
                 }
             }
+        }
+        else {
+            currentProgram.setCombinedWeight();
         }
     }
 
@@ -162,23 +171,132 @@ function buildPrograms() {
 }
 
 
-function Program(index, name, weight, children, parentName) {
+function Program(index, name, weight, childrenNames, parentName) {
     this.index = index;
     this.name = name;
     this.weight = weight;
-    this.children = children;
+    this.childrenNames = childrenNames;
+    this.children = null;
     this.parentName = parentName;
+    this.parent = (parentName != null) ? getProgramByName(parentName) : null;
+    this.combinedWeight = weight;
 }
 
 
 Program.prototype.toString = function() {
-    return 
-    " [ " + this.number + ", '" + this.name + "'"   
-    + ", weight==" + this.weight
-    + ", parentName=='" + this.parentName + "'"
-    + ", chilrden==" + this.children
-    + " ] ";
+    var output = "'" + this.name + "' (" + this.combinedWeight + ") of '" +  this.parentName + "'";
+    if (this.children != null && this.children.length > 0) {
+        output += " having children ";
+        for (i = 0; i < this.children.length; i++) {
+            output += "['" + this.children[i].name + "' (" + this.children[i].combinedWeight + ")]";
+            if (i < this.children.length - 1) {
+                output += ", ";
+            }
+        }
+    }
+    return output;
 }
+
+
+Program.prototype.setCombinedWeight = function() {
+    this.combinedWeight = 0;
+    if (this.weight != null) {
+        this.combinedWeight += this.weight;
+    }
+    if (this.children != null && this.children.length > 0) {
+        for (i = 0; i < this.children.length; i++) {
+            this.combinedWeight += this.children[i].combinedWeight;
+        }
+    } 
+    if (this.parentName != null) {
+        // console.log("setCombinedWeight(): this.name=='" + this.name + "', this.combinedWeight==" + this.combinedWeight + ", this.parentName=='" + this.parentName + "'");
+        this.parent.setCombinedWeight();
+    }
+    else {
+        // console.log("setCombinedWeight(): this.name=='" + this.name + "', this.combinedWeight==" + this.combinedWeight + " - I'm done!");
+    }
+}
+
+Program.prototype.findDestabilizingDescendant = function() {
+    console.log("findDestabilizingDescendant(): this == [ " + this.toString() + " ]");
+    if (this.children != null && this.children.length > 0) {
+        // Choose the child which doesn't match
+        // TODO: two childs, which one is incorrect?
+        var currentMedianCombinedWeight = this.getMedianChildCombinedWeight();
+        for (i = 0; i < this.children.length; i++) {
+            if (
+                destabilizingProgram == null 
+                && this.children[i].combinedWeight != this.currentMedianCombinedWeight
+            ) {
+                this.children[i].findDestabilizingDescendant();
+            }
+        }
+        if (destabilizingProgram == null) {
+            // No destabilizing descendants were found
+            console.log("findDestabilizingDescendant(): No destabilizing descendants were found. The destabilizing descendant is " + this.toString() + ".");
+            console.dir(this);
+            destabilizingProgram = this;
+            return;
+        }
+        
+    }
+    else {
+        // No children
+        console.log("findDestabilizingDescendant(): No children. The destabilizing descendant is " + this.toString() + ".");
+        console.dir(this);
+        destabilizingProgram = this;
+        return;
+    }
+}
+
+
+Program.prototype.getMedianChildCombinedWeight = function() {
+    // console.log("getMedianChildCombinedWeight(): this == [ " + this.toString() + " ]");
+    var m = this.children.map(function(v) {
+        return v.combinedWeight;
+    }).sort(function(a, b) {
+        return a - b;
+    });
+    var middle = Math.floor((m.length - 1) / 2); // NB: operator precedence
+    if (m.length % 2) {
+        return m[middle];
+    } else {
+        return (m[middle] + m[middle + 1]) / 2.0;
+    }
+}
+
+
+
+Program.prototype.cantBlambeChildren = function() {
+    if (this.children == null || this.children.length == 0) {
+        return true;
+    }
+    var currentMedianCombinedWeight = this.getMedianChildCombinedWeight();
+    for (i = 0; i < this.children.length; i++) {
+        if (this.children[i].combinedWeight != currentMedianCombinedWeight) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Program.prototype.getCombinedWeight = function() {
+//     return this.weight + this.getChilrdensWeight();
+// }
+
+// Program.prototype.getChilrdensCombinedWeight = function() {
+//     if (this.children != null) {
+//         var sum = 0;
+//         for (j = 0; j <this.children.length; j++) {
+//             sum += this.children[j].combinedWeight;
+//         }
+//         return sum;
+//     }
+//     else {
+//         // No childs
+//         return 0;
+//     } 
+// }
 
 
 function getProgramByName(name) {
@@ -194,6 +312,16 @@ function getProgramByName(name) {
     return null;
 }
 
+// Program.prototype.getChildWithWrongSize = function() {
+//     for (i = 0; i < this.children.length - 1; i++) {
+//         for (j = i + 1; j < this.children.length; j++) {
+//             if (getCombinedWeightByName(this.children[i]) == getCombinedWeightByName(this.children[j])) {
+//                 // both are ok, especially j;
+//             }
+
+//         }
+//     }
+// }
 
 function findIndexByName(name) {
     for (i = 0; i < programs.length; i++) {
@@ -216,30 +344,54 @@ function afterReading() {
     buildPrograms();
     findBottom();
 
-    console.log("\nafterReading(): Whew, I think I'm done here.");
+    console.log("afterReading(): bottomProgram == " + bottomProgram.toString());
+    console.log("afterReading(): bottomProgram.combinedWeight == " + bottomProgram.combinedWeight);
+    // console.dir(programs);
+
+    // bottomProgram.findDestabilizingDescendant();
+    // console.log("afterReading(): destabilizingProgram == " + destabilizingProgram.toString());
+    // console.log(destabilizingProgram.parent.toString());
+    // console.log(destabilizingProgram.parent.parent.toString());
+    findDestabilizingProgram();
 }
 
 
 function findBottom() {
     console.log("\nfindBottom()");
     var currentBottom = programs[0];    // Any will do.
-    console.log("findBottom(): currentBottom.parentName=='" + currentBottom.parentName + "', levelCount==" + levelCount);
-    console.dir(currentBottom);
+    console.log("findBottom(): currentBottom == [ " + currentBottom.toString() + " ], levelCount == " + levelCount);
+    // console.dir(currentBottom);
 
     while (currentBottom.parentName != null) {
         currentBottom = programs[findIndexByName(currentBottom.parentName)];
         levelCount++;
-        console.log("findBottom(): currentBottom.parentName=='" + currentBottom.parentName + "', levelCount==" + levelCount);
-        console.dir(currentBottom);
+        console.log("findBottom(): currentBottom == [ " + currentBottom.toString() + " ], levelCount == " + levelCount);
+        // console.dir(currentBottom);
     }
 
-    // console.log("findBottom(): currentBottom.parentName=='" + currentBottom.parentName + "', levelCount==" + levelCount);
-
     bottomProgram = currentBottom;
-    console.log("\nfindParent(program): Found the bottom!");
+    console.log("\findBottom(): Found the bottom!");
     console.log("findBottom(): bottomProgram.name == '" + bottomProgram.name + "', bottomProgram.index == " + bottomProgram.index+ ".");
 
 }
+
+
+function findDestabilizingProgram() {
+    for (i = 0; i < programs.length; i++) {
+        console.log("findDestabilizingProgram(): i == " + i + ", " + programs[i].toString());
+        if (programs[i].parent != null && programs[i].parentName != null) {
+            if (
+                programs[i].combinedWeight != programs[i].parent.getMedianChildCombinedWeight()
+                && programs[i].cantBlambeChildren()
+            ) {
+                destabilizingProgram = programs[i];
+                console.log("findDestabilizingProgram(): Match found! \n" + destabilizingProgram.toString() + "\n" + destabilizingProgram.parent.toString());
+            }
+        }
+    }
+}
+
+
 
 
 function writeOutputFile(outputTxt, elementId) {
