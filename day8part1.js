@@ -7,7 +7,12 @@ var commands = [];
 var registers = [];
 var stopReading = false;
 var instructionLogCutoff = 3;
+var commandsExecuted = 0;
+var execCommandsCutoff = 5;
+// var largestRegisterValue = null;
+var largestRegister = null;
 
+var commitedCommands = "";
 
 //  ** Run **
 
@@ -18,19 +23,21 @@ startDay8Part1();
 
 //  ** Objects  and Object.prototype functions **
 
-/**
- * 
- * @param {*} register 
- * @param {*} direction 
- * @param {*} amount 
- * @param {*} condition 
- */
-function Command(register, direction, amount, condition, originalInstruction) {
+
+function Command(register, direction, amount, condition, originalInstruction, linenumber) {
     this.register = register;
     this.direction = direction;
     this.amount = amount;
     this.condition = condition;
     this.originalInstruction = originalInstruction;
+    this.linenumber = linenumber;
+    this.toString = function () {
+        return "Command " + this.linenumber + " == '" + this.register.toString() + " " + this.direction + " " + this.amount + " if " + this.condition.toString() + "'";
+    }
+    this.execute = function() {
+
+        return operators[this.direction](this.register.value, this.amount);
+    }
 }
 
 
@@ -38,12 +45,29 @@ function Condition(left, operator, right) {
     this.left = left; 
     this.right = right;
     this.operator = operator;
+    this.toString = function () {
+        return "(" + this.left + " " + this.operator + " " + this.right + ")";
+    }
+    this.evaluate = function () {
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("Condition.evaluate(): " + this.toString());
+        }
+        var leftVar = (Number.isInteger(parseInt(this.left))) ? parseInt(this.left) : parseInt(this.left.value); 
+        var rightVar = (Number.isInteger(parseInt(this.right))) ? parseInt(this.right) : parseInt(this.right.value); 
+        // if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+        //     console.log("Condition.evaluate(): operators[" + this.operator + "](" + leftVar + ", " + rightVar +")");
+        // }
+        return operators[this.operator](leftVar, rightVar);
+    }
 }
 
 
 function Register(name) {
     this.name = name, 
-    this.value = 0
+    this.value = 0,
+    this.toString = function () {
+        return "[" + this.name + " == " + this.value + "]";
+    }
 }
 
 
@@ -92,41 +116,177 @@ function processLine(data) {
 
 
 function afterReading() {
-    console.log("\nafterReading(): Start!");
-    output += "\\n\\\nafterReading(): Start!\\n\\\n";
+    console.log("\nafterReading(): Start! Up next: parseCommands().");
+    output += "\\n\\\nafterReading(): Start! Up next: parseCommands().\\n\\\n";
     // console.dir(instructions);
+
+    createRegisters();
 
     parseCommands();
 
-    // writeOutputFile(output, "day8output");
+    console.log("\nafterReading(): parseCommands() completed! Up next: execCommands().");
+    output += "\\n\\\nafterReading(): parseCommands() completed! Up next: execCommands().\\n\\\n";
+
+    execCommands();
+
+    console.log("\nafterReading(): execCommands() completed! Correct puzzle answer is " + largestRegister.toString() + ".");  
+    // 5039 is too high
+    // 4145 is too low 
+    // 1298 is too low
+
+    output += "\\n\\\nafterReading(): execCommands() completed!\\n\\\n";
+
+    // console.dir(registers);
+    exportRegisters();
+    exportCommands();
+
+
+    // // writeOutputFile(output, "day8output");
+}
+
+
+function createRegisters() {
+    console.log("createRegisters(): Start!");
+    var tempRegistry = [];
+    var currentInstruction = instructions[1]; 
+    tempRegistry[0] = currentInstruction[0];
+    console.dir(tempRegistry);
+    for (var i = 2; i < instructions.length; i++) {
+        currentInstruction = instructions[i];
+        var matchFound = false;
+        for (var j = 0; j < tempRegistry.length; j++) {
+            if (currentInstruction[0].valueOf() == tempRegistry[j].valueOf()) {
+                matchFound = true;
+                break;
+            }
+        }
+        if (!matchFound) {
+            tempRegistry[tempRegistry.length] = currentInstruction[0];
+            tempRegistry.sort();
+        }
+    }
+    for (var k = 0; k < tempRegistry.length; k++) {
+        registers[k] = new Register(tempRegistry[k]);
+    }
+    console.log("createRegisters(): Done!");
+    console.dir(registers);
 }
 
 
 function parseCommands() {
-    console.log("parseCommands(): Start! instructions.length == " + instructions.length);
-    output += "parseCommands(): Start!\\n\\\n";
+    console.log("\nparseCommands(): Start! instructions.length == " + instructions.length);
+    output += "\\n\\\nparseCommands(): Start!\\n\\\n";
     for (var c = 1; c < instructions.length; c++) {
         // console.log("parseCommands(): c == " + c);
         // console.dir(instructions[c]);
         var currentInstruction = instructions[c];
         commands[c] = new Command(
-            getRegisterByName(currentInstruction[0]),   // register (Register)
+            getRegisterByName(currentInstruction[0], currentInstruction),   // register (Register)
             currentInstruction[1],                      // direction: inc or dec (String)
             currentInstruction[2],                      // amount (Integer)
             new Condition(
-                (Number.isInteger(currentInstruction[4])) ? parseInt(currentInstruction[4]) : getRegisterByName(currentInstruction[4]), 
+                (Number.isInteger(parseInt(currentInstruction[4]))) ? parseInt(currentInstruction[4]) : getRegisterByName(currentInstruction[4], currentInstruction), 
                 currentInstruction[5],                  // operator (String)
-                (Number.isInteger(currentInstruction[6])) ? parseInt(currentInstruction[6]) : getRegisterByName(currentInstruction[6])
+                (Number.isInteger(parseInt(currentInstruction[6]))) ? parseInt(currentInstruction[6]) : getRegisterByName(currentInstruction[6], currentInstruction)
             ),
-            currentInstruction
+            currentInstruction,
+            c
         );
         // console.log("parseCommands(): c == " + c);
     }
     console.log("parseCommands(): Done!");
     output += "parseCommands(): Done!\\n\\\n";
-    console.dir(commands[1]);
-    console.dir(commands[commands.length - 1]);
+    console.log("parseCommands(): " + commands[1].toString());
+    console.log("parseCommands(): " + commands[commands.length - 1].toString());
+    console.log("parseCommands(): registers[0] == " + registers[0].toString());
+    console.log("parseCommands(): registers[" + (registers.length - 1) + "] == " + registers[registers.length - 1].toString());
+    // console.dir(registers);
 }
+
+
+var operators = {
+    "inc": function(registerValue, commandAmount) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[inc]: " + registerValue + " + " + commandAmount + " == " + (registerValue + commandAmount));
+        }
+        return parseInt(registerValue + commandAmount); 
+    },
+    "dec": function(registerValue, commandAmount) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[inc]: " + registerValue + " - " + commandAmount + " == " + (registerValue - commandAmount));
+        }
+        return parseInt(registerValue - commandAmount); 
+    }, 
+    ">": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[>]: (" + left + " > " + right + ") == " + (left > right));
+        }
+        return (left > right); 
+    }, 
+    "<": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[<]: (" + left + " < " + right + ") == " + (left < right));
+        }
+        return (left < right); 
+    }, 
+    ">=": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[>=]: (" + left + " >= " + right + ") == " + (left >= right));
+        }
+        return (left >= right); 
+    }, 
+    "<=": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[<=]: (" + left + " <= " + right + ") == " + (left <= right));
+        }
+        return (left >= right); 
+    }, 
+    "==": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[==]: (" + left + " == " + right + ") == " + (left == right));
+        }
+        return (left == right); 
+    }, 
+    "!=": function(left, right) { 
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("operators[!=]: (" + left + " != " + right + ") == " + (left != right));
+        }
+        return (left != right); 
+    }, 
+};
+
+
+function execCommands() {
+    for (var i = 1; i < commands.length; i++) {
+        // Log
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("\nexecCommands(): " + commands[i].toString());
+            console.log("execCommands(): current register is " + commands[i].register.toString());
+        }
+        else if (commandsExecuted == execCommandsCutoff) {
+            console.log("\nexecCommands(): ...");
+        }
+        
+        // Execute
+        if (commands[i].condition.evaluate()) {
+            commitedCommands += commands[i].condition.evaluate() + "\t" + commands[i].register.toString() + "\t" + commands[i].toString() + "\t-->\t";
+            commands[i].register.value = commands[i].execute();
+            commitedCommands += commands[i].register.toString() + "\n";
+            if (largestRegister == null || commands[i].register.value > largestRegister.value) {
+                // largestRegisterValue = commands[i].register.value;
+                largestRegister = commands[i].register;
+            } 
+        }
+        
+        // Log
+        if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
+            console.log("execCommands(): current register is " + commands[i].register.toString());
+        }
+        commandsExecuted++;
+    }
+}
+
+
 
 
 // ** "Common" functions for reading input and writing output ** 
@@ -146,10 +306,7 @@ function readInputFile(inputFile, processLine) {
             while (index > -1 && !stopReading) {
                 var line = remaining.substring(last, index - 1);
                 last = index + 1;
-                
                 processLine(line);
-                
-        
                 index = remaining.indexOf('\n', last);
             }
             remaining = remaining.substring(last);
@@ -195,14 +352,48 @@ function writeOutputFile(outputTxt, elementId) {
 }
 
 
-function getRegisterByName(name) {
+function exportRegisters() {
+    var registry = "";
     for (var i = 0; i < registers.length; i++) {
-        if (!(registers[i].name < name || registers[i].name < name)) {
-            return registers[i]
+        registry += registers[i].name + "\t" + registers[i].value + "\t" + registers[i].originalInstruction + "\n";
+
+    }
+    fs.writeFile(
+        "attachments\\day8part1registry.txt", 
+        registry, 
+        function (err) {
+            if (err) {
+                throw err;
+            }
+        }  
+    );
+    console.log("exportRegisters(): Saved!");
+}
+
+
+function exportCommands() {
+    // var commandsOutput = "";
+    // for (var i = 1; i < commands.length; i++) {
+    //     commandsOutput += commands[i].toString() + "\n";
+
+    // }
+    fs.writeFile(
+        "attachments\\day8part1commandsOutput.txt", 
+        commitedCommands, 
+        function (err) {
+            if (err) {
+                throw err;
+            }
+        }  
+    );
+    console.log("exportCommands(): Saved!");
+}
+
+
+function getRegisterByName(name, originalInstruction) {
+    for (var i = 0; i < registers.length; i++) {
+        if (registers[i].name.valueOf() == name.valueOf()) {
+            return registers[i];
         }
-        // Not found, let's create a new one
-        var register = new Register(name);
-        registers[registers.length] = register;
-        return register;
     }
 }
