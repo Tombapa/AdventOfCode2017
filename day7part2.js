@@ -9,10 +9,26 @@ var programs = [];
 var needToStop = false;
 var levelCount = 0;
 var reportLogCutoff = 7;
+var findBottomCutoff = 3;
+var findDestabilizingCutoff = 3;
 
 var bottomProgram = null;
 var destabilizingProgram = null;
 
+
+//  ** Run **
+
+console.log("\nday7part2.js: Hello, World!");
+output += "\\n\\\nday7part2.js: Hello, World!\\n\\\n";
+var inputFileName = "attachments\\day7input.txt";
+var inputFile = fs.createReadStream(inputFileName);
+console.log("day7part2.js: About to read " + inputFileName + ".");
+output += "day7part2.js: About to read " + inputFileName.replace("\\", "\\\\") + ".\\n\\\n";
+
+readInputFile(inputFile, processLine);
+
+
+// ** Other than Program.prototype functions ** 
 
 function readInputFile(inputFile, processLine) {
     console.log("readInputFile(inputFile, processLine): start.");
@@ -94,8 +110,24 @@ function processLine(data) {
 }
 
 
+function afterReading() {
+    console.log("afterReading(): I have now read lines 1-" + linenumber + ", reports[(reports.length - 1)] == '" + reports[reports.length - 1] + "'.");
+    output += "afterReading(): I have now read lines 1-" + linenumber + ", reports[(reports.length - 1)] == '" + reports[programs.length - 1] + "'.\\n\\\n";  
+
+    buildPrograms();
+    findBottom();
+
+    console.log("afterReading(): bottomProgram == " + bottomProgram.toString());
+    // output += "afterReading(): bottomProgram == " + bottomProgram.toString() + "\\n\\\n";
+
+    findDestabilizingDescendant();
+    writeOutputFile(output, "day7part2");
+}
+
+
 function buildPrograms() {
     console.log("buildPrograms(): begin!");
+    output += "buildPrograms(): begin!\\n\\\n";
     for (index = 1; index < reports.length; index++) {
         var currentReport = reports[index];
         // console.log("buildPrograms(): currentReport == '" + currentReport + "'.");
@@ -166,10 +198,123 @@ function buildPrograms() {
     }
 
     console.log("buildPrograms(): completed!");
+    output += "buildProgram(): completed! The program at the largest index is " + programs[programs.length - 1].toString() + "\\n\\\n";
     // console.dir(programs);
 
 }
 
+
+function findBottom() {
+    console.log("\nfindBottom(): Start!");
+    var currentBottom = programs[0];    // Any will do.
+    console.log("findBottom(): currentBottom == [ " + currentBottom.toString() + " ], levelCount == " + levelCount);
+    // console.dir(currentBottom);
+
+    while (currentBottom.parentName != null) {
+        currentBottom = programs[findIndexByName(currentBottom.parentName)];
+        levelCount++;
+        console.log("findBottom(): currentBottom == " + currentBottom.toString() + ", levelCount == " + levelCount);
+        if (levelCount < findBottomCutoff) {
+            output += "findBottom(): currentBottom == " + currentBottom.toString() + ", levelCount == " + levelCount + "\\n\\\n";
+        }
+        else if (levelCount == findBottomCutoff) {
+            output += "findBottom(): ... \\n\\\n";
+        }
+        // console.dir(currentBottom);
+    }
+
+    bottomProgram = currentBottom;
+    console.log("findBottom(): Found the bottom!");
+    console.log("findBottom(): bottomProgram.name == '" + bottomProgram.name + "', bottomProgram.index == " + bottomProgram.index+ ".");
+    output += "findBottom(): Found the bottom! bottomProgram.name == \'" + bottomProgram.name + "\', bottomProgram.index == " + bottomProgram.index+ ".\\n\\\n"
+
+    output += "findBottom(): Found the bottom!\\n\\\n";
+    output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 1 completed. The bottom program is ";
+    output += "<span id=\\\"result\\\">" + bottomProgram.name + "</span>";
+    output += "<span id=\\\"mask\\\">[hover]</span>";
+    output += ".</strong></div>\\n\\\n";
+    // output += "\\n\\\n";
+}
+
+
+function findDestabilizingDescendant() {
+    console.log("findDestabilizingDescendant(): bottomProgram is " + bottomProgram.toString());
+    output += "findDestabilizingDescendant(): ...\\n\\\n";
+    var current = bottomProgram;
+    var next = bottomProgram.getDestabilizingChild();
+    var iteration = 0;
+    
+    while (next != null) {
+        current = next;
+        next = current.getDestabilizingChild();
+        iteration++;
+        if (iteration < findDestabilizingCutoff) {
+            output += "findDestabilizingDescendant(): current program is " + current.toString() + ".\\n\\\n";
+        }
+        else if (iteration == findDestabilizingCutoff) {
+            output += "findDestabilizingDescendant(): ...\\n\\\n";
+        }
+        
+    }
+    console.log("findDestabilizingDescendant(): The closest-to-bottom program without destabilizing child is \\n\\\n<strong>" + current.toString()) + "</strong>";
+    console.log("findDestabilizingDescendant(): Its parent is " + current.parent.toString() + " with median combined weigth " + current.parent.getMedianChildCombinedWeight()); // 1777 is too high
+    output += "findDestabilizingDescendant(): The closest-to-bottom program without destabilizing child \\n\\\nis <strong>" + current.toString() + "</strong>.\\n\\\n";
+    output += "findDestabilizingDescendant(): Its parent is " + current.parent.toString() + " <strong>with median combined weigth " + current.parent.getMedianChildCombinedWeight() + "</strong>.\\n\\\n";
+
+    // Calculate target weight
+    var result = current.parent.getMedianChildCombinedWeight() - (current.getMedianChildCombinedWeight() * current.children.length);
+    console.log("findDestabilizingDescendant(): I'm done! The correct solution is to decrease 'current' weight from " + current.weight + " to " + result + ".");
+    output += "findDestabilizingDescendant(): Whew, I'm done, finally!\\n\\\n";
+    output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 2 completed. The correct weight would be ";
+    output += "<span id=\\\"result\\\">" + result + "</span>";
+    output += "<span id=\\\"mask\\\">[hover]</span>";
+    output += ".</strong></div>";
+    output += "</pre>\";\n";
+}
+
+
+function getProgramByName(name) {
+    for (i = 0; i < programs.length; i++) {
+        if (!((programs[i].name < name) || (programs[i].name > name))) {
+            // console.log("getProgramByName(" + name + "): Program found at programs[" + i + "]. Dir:"); //, requested by linenumber==" + linenumber + ".");
+            // console.dir
+            return programs[i];
+        }
+        // else {}
+    }
+    console.log("getProgramByName(" + name + "): Didn't find a thing!");
+    return null;
+}
+
+
+function findIndexByName(name) {
+    for (i = 0; i < programs.length; i++) {
+        if (!((programs[i].name < name) || (programs[i].name > name))) {
+            // console.log("findIndexByName(" + name + "): Program found at programs[" + i + "]. Dir:"); //, requested by linenumber==" + linenumber + ".");
+            // console.dir
+            return i;
+        }
+        // else {}
+    }
+    // console.log("findIndexByName(" + name + "): Didn't find a thing!");
+    return null;
+}
+
+
+function writeOutputFile(outputTxt, elementId) {
+    var outputJS = "var output = \""; 
+    outputJS += outputTxt;
+    // outputJS += "\\n\\\n";
+    outputJS += "\ndocument.getElementById(\"" + elementId + "\").innerHTML = output;";
+
+    fs.writeFile("attachments\\" + elementId + "output.js", outputJS, function (err) {
+        if (err) throw err;
+        console.log("writeOutputFile(): Saved!");
+    });
+}
+
+
+//  ** Object Program and Program.prototype functions **
 
 function Program(index, name, weight, childrenNames, parentName) {
     this.index = index;
@@ -184,15 +329,16 @@ function Program(index, name, weight, childrenNames, parentName) {
 
 
 Program.prototype.toString = function() {
-    var output = "'" + this.name + "' (" + this.combinedWeight + ") of '" +  this.parentName + "'";
+    var output = "'" + this.name + "' (" + this.weight + ", " + this.combinedWeight + ") of '" +  this.parentName + "'";
     if (this.children != null && this.children.length > 0) {
-        output += " having children ";
+        output += " \\n\\\n\\thaving children [";
         for (i = 0; i < this.children.length; i++) {
-            output += "['" + this.children[i].name + "' (" + this.children[i].combinedWeight + ")]";
+            output += "\\n\\\n\\t  '" + this.children[i].name + "' (" + this.children[i].weight + ", " + this.children[i].combinedWeight + ")";
             if (i < this.children.length - 1) {
                 output += ", ";
             }
         }
+        output += "\\n\\\n\\t]";
     }
     return output;
 }
@@ -214,39 +360,6 @@ Program.prototype.setCombinedWeight = function() {
     }
     else {
         // console.log("setCombinedWeight(): this.name=='" + this.name + "', this.combinedWeight==" + this.combinedWeight + " - I'm done!");
-    }
-}
-
-
-Program.prototype.findDestabilizingDescendant = function() {
-    console.log("findDestabilizingDescendant(): this == [ " + this.toString() + " ]");
-    if (this.children != null && this.children.length > 0) {
-        // Choose the child which doesn't match
-        // TODO: two childs, which one is incorrect?
-        var currentMedianCombinedWeight = this.getMedianChildCombinedWeight();
-        for (i = 0; i < this.children.length; i++) {
-            if (
-                destabilizingProgram == null 
-                && this.children[i].combinedWeight != this.currentMedianCombinedWeight
-            ) {
-                this.children[i].findDestabilizingDescendant();
-            }
-        }
-        if (destabilizingProgram == null) {
-            // No destabilizing descendants were found
-            console.log("findDestabilizingDescendant(): No destabilizing descendants were found. The destabilizing descendant is " + this.toString() + ".");
-            console.dir(this);
-            destabilizingProgram = this;
-            return;
-        }
-        
-    }
-    else {
-        // No children
-        console.log("findDestabilizingDescendant(): No children. The destabilizing descendant is " + this.toString() + ".");
-        console.dir(this);
-        destabilizingProgram = this;
-        return;
     }
 }
 
@@ -279,161 +392,3 @@ Program.prototype.getDestabilizingChild = function() {
     }
     return null;
 }
-
-// Program.prototype.getCombinedWeight = function() {
-//     return this.weight + this.getChilrdensWeight();
-// }
-
-// Program.prototype.getChilrdensCombinedWeight = function() {
-//     if (this.children != null) {
-//         var sum = 0;
-//         for (j = 0; j <this.children.length; j++) {
-//             sum += this.children[j].combinedWeight;
-//         }
-//         return sum;
-//     }
-//     else {
-//         // No childs
-//         return 0;
-//     } 
-// }
-
-
-function getProgramByName(name) {
-    for (i = 0; i < programs.length; i++) {
-        if (!((programs[i].name < name) || (programs[i].name > name))) {
-            // console.log("getProgramByName(" + name + "): Program found at programs[" + i + "]. Dir:"); //, requested by linenumber==" + linenumber + ".");
-            // console.dir
-            return programs[i];
-        }
-        // else {}
-    }
-    console.log("getProgramByName(" + name + "): Didn't find a thing!");
-    return null;
-}
-
-// Program.prototype.getChildWithWrongSize = function() {
-//     for (i = 0; i < this.children.length - 1; i++) {
-//         for (j = i + 1; j < this.children.length; j++) {
-//             if (getCombinedWeightByName(this.children[i]) == getCombinedWeightByName(this.children[j])) {
-//                 // both are ok, especially j;
-//             }
-
-//         }
-//     }
-// }
-
-function findIndexByName(name) {
-    for (i = 0; i < programs.length; i++) {
-        if (!((programs[i].name < name) || (programs[i].name > name))) {
-            // console.log("findIndexByName(" + name + "): Program found at programs[" + i + "]. Dir:"); //, requested by linenumber==" + linenumber + ".");
-            // console.dir
-            return i;
-        }
-        // else {}
-    }
-    // console.log("findIndexByName(" + name + "): Didn't find a thing!");
-    return null;
-}
-
-
-function afterReading() {
-    console.log("afterReading(): I have now read lines 1-" + linenumber + ", reports[(reports.length - 1)] == '" + reports[reports.length - 1] + "'.");
-    output += "afterReading(): I have now read lines 1-" + linenumber + ", reports[(reports.length - 1)] == '" + reports[programs.length - 1] + "'.\\n\\\n";  
-
-    buildPrograms();
-    findBottom();
-
-    console.log("afterReading(): bottomProgram == " + bottomProgram.toString());
-    console.log("afterReading(): bottomProgram.combinedWeight == " + bottomProgram.combinedWeight);
-    // console.dir(programs);
-
-    // bottomProgram.findDestabilizingDescendant();
-    // console.log("afterReading(): destabilizingProgram == " + destabilizingProgram.toString());
-    // console.log(destabilizingProgram.parent.toString());
-    // console.log(destabilizingProgram.parent.parent.toString());
-    
-    // findDestabilizingProgram();
-    findDestabilizingDescendant();
-}
-
-
-function findBottom() {
-    console.log("\nfindBottom()");
-    var currentBottom = programs[0];    // Any will do.
-    console.log("findBottom(): currentBottom == [ " + currentBottom.toString() + " ], levelCount == " + levelCount);
-    // console.dir(currentBottom);
-
-    while (currentBottom.parentName != null) {
-        currentBottom = programs[findIndexByName(currentBottom.parentName)];
-        levelCount++;
-        console.log("findBottom(): currentBottom == [ " + currentBottom.toString() + " ], levelCount == " + levelCount);
-        // console.dir(currentBottom);
-    }
-
-    bottomProgram = currentBottom;
-    console.log("\findBottom(): Found the bottom!");
-    console.log("findBottom(): bottomProgram.name == '" + bottomProgram.name + "', bottomProgram.index == " + bottomProgram.index+ ".");
-
-}
-
-
-function findDestabilizingProgram() {
-    for (i = 0; i < programs.length; i++) {
-        console.log("findDestabilizingProgram(): i == " + i + ", " + programs[i].toString());
-        if (programs[i].parent != null && programs[i].parentName != null) {
-            if (
-                programs[i].combinedWeight != programs[i].parent.getMedianChildCombinedWeight()
-                && programs[i].cantBlambeChildren()
-            ) {
-                destabilizingProgram = programs[i];
-                console.log("findDestabilizingProgram(): Match found! \n" + destabilizingProgram.toString() + "\n" + destabilizingProgram.parent.toString());
-            }
-        }
-    }
-}
-
-
-function findDestabilizingDescendant() {
-    console.log("findDestabilizingDescendant(): bottomProgram is " + bottomProgram.toString());
-    var current = bottomProgram;
-    var next = bottomProgram.getDestabilizingChild();
-    while (next != null) {
-        current = next;
-        next = current.getDestabilizingChild()
-    }
-    console.log("findDestabilizingDescendant(): The closest-to-bottom program without destabilizing child is " + current.toString());
-    console.log("findDestabilizingDescendant(): Its parent is " + current.parent.toString() + " with median combined weigth " + current.parent.getMedianChildCombinedWeight()); // 1777 is too high
-
-    // Calculate target weight
-    var result = current.parent.getMedianChildCombinedWeight() - (current.getMedianChildCombinedWeight() * current.children.length);
-    // console.log(
-    //     "findDestabilizingDescendant(): result == " + result 
-    //     + ", current.getMedianChildCombinedWeight() == " + current.getMedianChildCombinedWeight()
-    //     + ", current.children.length == " + current.children.length
-    // );
-    console.log("findDestabilizingDescendant(): I'm done! The correct solution is to decrease 'current' weight from " + current.weight + " to " + result + ".");
-}
-
-
-
-function writeOutputFile(outputTxt, elementId) {
-    var outputJS = "var output = \""; 
-    outputJS += outputTxt;
-    // outputJS += "\\n\\\n";
-    outputJS += "\ndocument.getElementById(\"" + elementId + "\").innerHTML = output;";
-
-    fs.writeFile("attachments\\" + elementId + "output.js", outputJS, function (err) {
-        if (err) throw err;
-        console.log("writeOutputFile(): Saved!");
-    });
-}
-
-console.log("\nday7part1.js: Hello, World!");
-output += "\\n\\\nday7part1.js: Hello, World!\\n\\\n";
-var inputFileName = "attachments\\day7input.txt";
-var inputFile = fs.createReadStream(inputFileName);
-console.log("day7part1.js: About to read " + inputFileName + ".");
-output += "day7part1.js: About to read " + inputFileName.replace("\\", "\\\\") + ".\\n\\\n";
-
-readInputFile(inputFile, processLine);
