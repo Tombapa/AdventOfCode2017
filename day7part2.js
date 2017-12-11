@@ -217,6 +217,7 @@ Program.prototype.setCombinedWeight = function() {
     }
 }
 
+
 Program.prototype.findDestabilizingDescendant = function() {
     console.log("findDestabilizingDescendant(): this == [ " + this.toString() + " ]");
     if (this.children != null && this.children.length > 0) {
@@ -266,18 +267,17 @@ Program.prototype.getMedianChildCombinedWeight = function() {
 }
 
 
-
-Program.prototype.cantBlambeChildren = function() {
+Program.prototype.getDestabilizingChild = function() {
     if (this.children == null || this.children.length == 0) {
-        return true;
+        return null;
     }
     var currentMedianCombinedWeight = this.getMedianChildCombinedWeight();
     for (i = 0; i < this.children.length; i++) {
         if (this.children[i].combinedWeight != currentMedianCombinedWeight) {
-            return false;
+            return this.children[i];
         }
     }
-    return true;
+    return null;
 }
 
 // Program.prototype.getCombinedWeight = function() {
@@ -352,7 +352,9 @@ function afterReading() {
     // console.log("afterReading(): destabilizingProgram == " + destabilizingProgram.toString());
     // console.log(destabilizingProgram.parent.toString());
     // console.log(destabilizingProgram.parent.parent.toString());
-    findDestabilizingProgram();
+    
+    // findDestabilizingProgram();
+    findDestabilizingDescendant();
 }
 
 
@@ -391,6 +393,27 @@ function findDestabilizingProgram() {
     }
 }
 
+
+function findDestabilizingDescendant() {
+    console.log("findDestabilizingDescendant(): bottomProgram is " + bottomProgram.toString());
+    var current = bottomProgram;
+    var next = bottomProgram.getDestabilizingChild();
+    while (next != null) {
+        current = next;
+        next = current.getDestabilizingChild()
+    }
+    console.log("findDestabilizingDescendant(): The closest-to-bottom program without destabilizing child is " + current.toString());
+    console.log("findDestabilizingDescendant(): Its parent is " + current.parent.toString() + " with median combined weigth " + current.parent.getMedianChildCombinedWeight()); // 1777 is too high
+
+    // Calculate target weight
+    var result = current.parent.getMedianChildCombinedWeight() - (current.getMedianChildCombinedWeight() * current.children.length);
+    // console.log(
+    //     "findDestabilizingDescendant(): result == " + result 
+    //     + ", current.getMedianChildCombinedWeight() == " + current.getMedianChildCombinedWeight()
+    //     + ", current.children.length == " + current.children.length
+    // );
+    console.log("findDestabilizingDescendant(): I'm done! The correct solution is to decrease 'current' weight from " + current.weight + " to " + result + ".");
+}
 
 
 
