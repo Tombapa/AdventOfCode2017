@@ -18,7 +18,7 @@ var commitedCommands = "register.name \tregister (pre) \tcommand \tcondition \te
 
 //  ** Run **
 
-startday8();
+day8();
 
 // ** Done running!
 
@@ -75,13 +75,13 @@ function Register(name) {
 
 // ** Other functions **
 
-function startday8() {
-    console.log("\nstartday8(): Hello, World!");
-    output += "\\n\\\nstartday8(): Hello, World!\\n\\\n";
+function day8() {
+    console.log("\nday8(): Hello, World!");
+    output += "\\n\\\nday8(): Hello, World!\\n\\\n";
     var inputFileName = "attachments\\day8input.txt";
     var inputFile = fs.createReadStream(inputFileName);
-    console.log("startday8(): About to read " + inputFileName + ".");
-    output += "startday8(): About to read " + inputFileName.replace("\\", "\\\\") + ".\\n\\\n";
+    console.log("day8(): About to read " + inputFileName + ".");
+    output += "day8(): About to read " + inputFileName.replace("\\", "\\\\") + ".\\n\\\n";
     
     readInputFile(inputFile, processLine);
 }
@@ -118,8 +118,8 @@ function processLine(data) {
 
 
 function afterReading() {
-    console.log("\nafterReading(): Start! Up next: createRegisters(), parseCommands(), execCommands(), findBiggestRegister().");
-    output += "\\n\\\nafterReading(): Start! Up next: createRegisters(), parseCommands(), execCommands(), findBiggestRegister().\\n\\\n";
+    console.log("\nafterReading(): Start! \n\tUp next: createRegisters(), parseCommands(), execCommands(), findBiggestRegister().");
+    output += "\\n\\\nafterReading(): Start! \\n\\\n\\tUp next: createRegisters(), parseCommands(), execCommands(), findBiggestRegister().\\n\\\n";
     // console.dir(instructions);
 
     createRegisters();
@@ -140,7 +140,7 @@ function afterReading() {
     // 1298 is too low
 
     console.log("\nafterReading(): findBiggestRegister() completed! Correct puzzle answer is " + biggestRegister.toString() + ". Peak highest value was " + peakHighestValue + " (" + peakHighestValueNotes + ")." );
-    output += "afterReading(): findBiggestRegister() completed!\\n\\\n";
+    output += "\\n\\\nafterReading(): findBiggestRegister() completed!\\n\\\n";
 
     output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 1 completed. The bottom program is ";
     output += "<span id=\\\"result\\\">" + biggestRegister.value + "</span>";
@@ -162,8 +162,8 @@ function afterReading() {
 
 
 function createRegisters() {
-    console.log("createRegisters(): Start!");
-    output += "parseCommands(): Start!\\n\\\n";
+    console.log("\ncreateRegisters(): Start!");
+    output += "\\n\\\ncreateRegisters(): Start!\\n\\\n";
     var tempRegistry = [];
     var currentInstruction = instructions[1]; 
     tempRegistry[0] = currentInstruction[0];
@@ -186,14 +186,19 @@ function createRegisters() {
         registers[k] = new Register(tempRegistry[k]);
     }
     console.log("createRegisters(): Done, registers.length == " + registers.length + ".");
-    output += "parseCommands(): Done, registers.length == " + registers.length + ".\\n\\\n";
+    console.log("\tregisters[0]: " + registers[0].toString());
+    console.log("\tregisters[" + (registers.length - 1) + "]: " + registers[registers.length - 1].toString());
+
+    output += "createRegisters(): Done, registers.length == " + registers.length + ".\\n\\\n";
+    output += "\\tregisters[0]: " + registers[0].toString() + "\\n\\\n";
+    output += "\\tregisters[" + (registers.length - 1) + "]: " + registers[registers.length - 1].toString() + "\\n\\\n";
     // console.dir(registers);
 }
 
 
 function parseCommands() {
     console.log("\nparseCommands(): Start! instructions.length == " + instructions.length);
-    output += "parseCommands(): Start!\\n\\\n";
+    output += "\\n\\\nparseCommands(): Start!\\n\\\n";
     for (var c = 1; c < instructions.length; c++) {
         // console.log("parseCommands(): c == " + c);
         // console.dir(instructions[c]);
@@ -215,14 +220,11 @@ function parseCommands() {
     console.log("parseCommands(): Done! For reference:");
     console.log("\t" + commands[1].toString());
     console.log("\t" + commands[commands.length - 1].toString());
-    console.log("\tregisters[0]: " + registers[0].toString());
-    console.log("\tregisters[" + (registers.length - 1) + "]: " + registers[registers.length - 1].toString());
 
     output += "parseCommands(): Done! For reference:\\n\\\n";
     output += "\\t" + commands[1].toString() + "\\n\\\n";
     output += "\\t" + commands[commands.length - 1].toString() + "\\n\\\n";
-    output += "\\tregisters[0]: " + registers[0].toString() + "\\n\\\n";
-    output += "\\tregisters[" + (registers.length - 1) + "]: " + registers[registers.length - 1].toString() + "\\n\\\n";
+
     // console.dir(registers);
 }
 
@@ -280,17 +282,17 @@ var operators = {
 
 
 function execCommands() {
-    output += "execCommands(): Start!\\n\\\n";
+    output += "\\n\\\nexecCommands(): Start!\\n\\\n";
     for (var i = 1; i < commands.length; i++) {
         // Log
         if (commandsExecuted < execCommandsCutoff || commandsExecuted > (commands.length - 3)) {
             console.log("\nexecCommands(): " + commands[i].toString());
             // console.log("execCommands(): current register is " + commands[i].register.toString());
-            output += "execCommands(): " + commands[i].toString() + "\\n\\\n";
+            output += "\\t" + commands[i].toString() + "\\n\\\n";
         }
         else if (commandsExecuted == execCommandsCutoff) {
             console.log("\nexecCommands(): ...");
-            output += "execCommands(): ...\\n\\\n";
+            output += "\\t...\\n\\\n";
         }
         
         // Commit  & log to commands output txt file
@@ -334,7 +336,7 @@ function readInputFile(inputFile, processLine) {
     try {
         inputFile.on('data', function(data) {
             console.log("readInputFile(inputFile, processLine).inputFile.on('data', function(data)).");
-            output += "readInputFile(inputFile, processLine).inputFile.on('data', function(data)).\\n\\\n"
+            output += "\\t ... inputFile.on('data', function(data)).\\n\\\n"
 
             remaining += data;
             var index = remaining.indexOf('\n');
@@ -362,7 +364,7 @@ function readInputFile(inputFile, processLine) {
                     processLine(remaining);
                 }
                 console.log("readInputFile(inputFile, processLine).inputFile.on('end', function()): moving to afterReading().");
-                output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): moving to afterReading().\\n\\\n";
+                output += "\\t... inputFile.on('end', function()): moving to afterReading().\\n\\\n";
                 afterReading();
             });
         }
