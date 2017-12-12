@@ -147,7 +147,7 @@ function afterReading() {
     output += "<span id=\\\"mask\\\">[hover]</span>";
     output += " at register \'"+ biggestRegister.name + "\'.</strong></div>\\n\\\n";
 
-    output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 2 completed. The peak highest value was ";
+    output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 2 completed. The peak highest value is ";
     output += "<span id=\\\"result\\\">" + peakHighestValue + "</span>";
     output += "<span id=\\\"mask\\\">[hover]</span>";
     output += ".</strong></div>";

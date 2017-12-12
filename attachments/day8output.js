@@ -31,6 +31,6 @@ afterReading(): findBiggestRegister() completed!\n\
 \n\
 <div class=\"result\"><strong>Part 1 completed. The bottom program is <span id=\"result\">4163</span><span id=\"mask\">[hover]</span> at register 'm'.</strong></div>\n\
 \n\
-<div class=\"result\"><strong>Part 2 completed. The peak highest value was <span id=\"result\">5347</span><span id=\"mask\">[hover]</span>.</strong></div></pre>";
+<div class=\"result\"><strong>Part 2 completed. The peak highest value is <span id=\"result\">5347</span><span id=\"mask\">[hover]</span>.</strong></div></pre>";
 
 document.getElementById("day8").innerHTML = output;
