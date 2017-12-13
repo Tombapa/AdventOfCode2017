@@ -1,6 +1,8 @@
 var fs = require('fs');
 var steps = null;
+var stepsReduced = 0;
 var output = "<pre>";
+
 
 var smallestStepCount = null;
 
@@ -70,6 +72,77 @@ function afterReading() {
 }
 
 
+function reduceVectors () {
+    console.log("\nreduceVectors(): Start!");
+    output += "\\n\\\ntakeTheSteps(): Start!\\n\\\n";
+
+    // Eliminate opposite directions
+    while (vectors.s > 0 && vectors.n > 0) {
+        vectors.s--;
+        vectors.n--;
+        stepsReduced += 2;
+    }
+    while (vectors.sw > 0 && vectors.ne > 0) {
+        vectors.sw--;
+        vectors.ne--;
+        stepsReduced += 2;
+    }
+    while (vectors.nw > 0 && vectors.se > 0) {
+        vectors.nw--;
+        vectors.se--;
+        stepsReduced += 2;
+    }
+
+    // Enable triangle shortcuts via hypothenuses
+    while (vectors.ne > 0 && vectors.nw > 0) {
+        vectors.ne--;
+        vectors.nw--;
+        vectors.n++;
+        stepsReduced++;
+    }
+    while (vectors.se > 0 && vectors.sw > 0) {
+        vectors.se--;
+        vectors.sw--;
+        vectors.s++;
+        stepsReduced++;
+    }
+
+    // Enable shortcut through roundabouts
+    while (vectors.s > 0 && vectors.se > 0 && vectors.ne > 0) {
+        vectors.s--;
+        vectors.ne--;
+        vectors.se++;
+        stepsReduced++;
+    }
+    while (vectors.s > 0 && vectors.sw > 0 && vectors.nw > 0) {
+        vectors.s--;
+        vectors.nw--;
+        vectors.sw++;
+        stepsReduced--;
+    }
+
+    while (vectors.n > 0 && vectors.ne > 0 && vectors.se > 0) {
+        vectors.n--;
+        vectors.se--;
+        vectors.ne++;
+        stepsReduced++;
+    }
+    while (vectors.n > 0 && vectors.nw > 0 && vectors.sw > 0) {
+        vectors.n--;
+        vectors.sw--;
+        vectors.nw++;
+        stepsReduced--;
+    }
+
+
+
+
+    console.log("\nreduceVectors(): Completed! Reduced " + stepsReduced + " steps.");
+    output += "\\n\\\ntakeTheSteps(): Completed! Reduced " + stepsReduced + " steps.\\n\\\n";
+
+}
+
+
 function takeTheSteps() {
     console.log("\ntakeTheSteps(): Start! For the record, steps.length == " + steps.length);
     output += "\\n\\\ntakeTheSteps(): Start!\\n\\\n";
@@ -84,11 +157,6 @@ function takeTheSteps() {
     distances.northwestToSoutheast = vectors.se - vectors.nw;
     console.dir(distances);
 
-
-    // TODO: reduce. 
-    // [ne,ne,s,s] is 2 steps away (se,se).
-    // [se,sw,se,sw,sw] is 3 steps away (s,s,sw).
-
     smallestStepCount = (
         Math.abs(distances.southToNorth) + 
         Math.abs(distances.southwestToNortheast) + 
@@ -96,6 +164,25 @@ function takeTheSteps() {
     );
     console.log("takeTheSteps(): smallestStepCount == " + smallestStepCount);
     output += "\\n\\\ntakeTheSteps(): smallestStepCount == " + smallestStepCount + "\\n\\\n";
+
+
+    // TODO: reduce. 
+    // [ne,ne,s,s] is 2 steps away (se,se).
+    // [se,sw,se,sw,sw] is 3 steps away (s,s,sw).
+
+    reduceVectors();
+
+    distances.southToNorth = vectors.n - vectors.s;
+    distances.southwestToNortheast = vectors.ne - vectors.sw;
+    distances.northwestToSoutheast = vectors.se - vectors.nw;
+    console.dir(distances);
+    console.dir(vectors);
+
+    smallestStepCount = vectors.s + vectors.n + vectors.sw + vectors.ne + vectors.nw + vectors.se;
+    console.log("takeTheSteps(): smallestStepCount == " + smallestStepCount);
+    output += "\\n\\\ntakeTheSteps(): smallestStepCount == " + smallestStepCount + "\\n\\\n";
+
+
 
     // 781 is too high.
 }

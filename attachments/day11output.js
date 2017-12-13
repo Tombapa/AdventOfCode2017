@@ -12,6 +12,12 @@ takeTheSteps(): Start!\n\
 \n\
 takeTheSteps(): smallestStepCount == 781\n\
 \n\
+takeTheSteps(): Start!\n\
+\n\
+takeTheSteps(): Completed! Reduced 7536 steps.\n\
+\n\
+takeTheSteps(): smallestStepCount == 687\n\
+\n\
 <div class=\"result\"><strong>Part 1 completed. The result is <span id=\"result\">null</span><span id=\"mask\">[hover]</span> at somewhere 'null'.</strong></div>\n\
 \n\
 <div class=\"result\"><strong>Part 2 completed. The correct answer is <span id=\"result\">null</span><span id=\"mask\">[hover]</span>.</strong></div></pre>";
