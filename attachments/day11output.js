@@ -10,11 +10,9 @@ afterReading(): Start!\n\
 \n\
 takeTheSteps(): Start!\n\
 \n\
-takeTheSteps(): smallestStepCount == 781\n\
+reduceVectors(): Start!\n\
 \n\
-takeTheSteps(): Start!\n\
-\n\
-takeTheSteps(): Completed! Reduced 7536 steps.\n\
+reduceVectors(): Completed! Reduced 7536 steps.\n\
 \n\
 takeTheSteps(): smallestStepCount == 687\n\
 \n\

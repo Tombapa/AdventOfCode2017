@@ -74,7 +74,7 @@ function afterReading() {
 
 function reduceVectors () {
     console.log("\nreduceVectors(): Start!");
-    output += "\\n\\\ntakeTheSteps(): Start!\\n\\\n";
+    output += "\\n\\\nreduceVectors(): Start!\\n\\\n";
 
     // Eliminate opposite directions
     while (vectors.s > 0 && vectors.n > 0) {
@@ -131,14 +131,14 @@ function reduceVectors () {
         vectors.n--;
         vectors.sw--;
         vectors.nw++;
-        stepsReduced--;
+        stepsReduced++;
     }
 
 
 
 
     console.log("\nreduceVectors(): Completed! Reduced " + stepsReduced + " steps.");
-    output += "\\n\\\ntakeTheSteps(): Completed! Reduced " + stepsReduced + " steps.\\n\\\n";
+    output += "\\n\\\nreduceVectors(): Completed! Reduced " + stepsReduced + " steps.\\n\\\n";
 
 }
 
@@ -163,7 +163,7 @@ function takeTheSteps() {
         Math.abs(distances.northwestToSoutheast)
     );
     console.log("takeTheSteps(): smallestStepCount == " + smallestStepCount);
-    output += "\\n\\\ntakeTheSteps(): smallestStepCount == " + smallestStepCount + "\\n\\\n";
+    // output += "\\n\\\ntakeTheSteps(): smallestStepCount == " + smallestStepCount + "\\n\\\n";
 
 
     // TODO: reduce. 
