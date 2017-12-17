@@ -7,7 +7,9 @@ var inputLogCutoff = 3;
 var needToStop = false;
 var loggedSteps = [0, 3, 9];
 var programs = [];
-var groupContaining0 = [];
+var connectedPrograms = [];
+var amountOfGroups = 0;
+var groupStartingPoint = null;
 
 
 // ** Run ** //
@@ -23,9 +25,10 @@ function Program(index) {
         output += "\\n\\\nnew Program(" + index + ")\\n\\\n";
         // console.dir(myVectors);
     }
-    this.index = index;
+    this.index = parseInt(index);
     this.connectedPrograms = [];
-    this.distanceFrom0 = null;
+    this.groupLeader = null;
+    this.distanceFromGroupLeader = null;
     this.addConnectedProgram = function(program) {
         this.connectedPrograms[this.connectedPrograms.length] = program;
     }
@@ -162,80 +165,105 @@ function parsePrograms() {
 
         if (loggedSteps.includes(i)) {
             console.log(programs[i].toString());
-            console.dir(programs[i]);
+            // console.dir(programs[i]);
             output += "\\n\\\n" + programs[i].toString() + ")\\n\\\n";
         }
     }   
 
     console.log("parsePrograms(): almost done! Proceeding to the next function.");
     output += "parsePrograms(): almost done! Proceeding to the next function.\\n\\\n";
-    getConnectedPrograms();
+    getConnectedPrograms(programs[0]);
 }
 
 
-function getConnectedPrograms() {
-    console.log("getConnectedPrograms(): start.");
-    output += "getConnectedPrograms(): start.\\n\\\n";
 
-    groupContaining0[0] = programs[0];
-    programs[0].distanceFrom0 = 0;
 
-    var newLevelFound = true;
-    var currentLevel = 0;
 
-    while (newLevelFound && currentLevel < 2) {
-        console.log("getConnectedPrograms(): currentLevel == " + currentLevel + ".");
-        output += "getConnectedPrograms(): currentLevel == " + currentLevel + ".\\n\\\n";
-        newLevelFound = false;
-
-        for (var i = 0; i < groupContaining0.length; i++) {
-            
-            if (groupContaining0[i].distanceFrom0 == currentLevel) {
-                var currentParent = groupContaining0[i];
-                
-                
-                for (var j = 0; j < currentParent.connectedPrograms.length; j++) {
-                    var currentProrgram = currentParent.connectedPrograms[j];
-                    console.log("getConnectedPrograms(): currentProgram == " + currentProrgram.toString());
-                    if (!isConnectedTo0(currentProrgram)) {
-                        currentProrgram.distanceFrom0 = currentLevel + 1;
-                        groupContaining0[groupContaining0.length] = currentProrgram;
+function getConnectedPrograms(groupLeader) {
+    if (groupLeader == null) {
+        console.log("getConnectedPrograms(): all " + amountOfGroups + " groups have been documented.");
+    }
+    else {
+        amountOfGroups++;
+        console.log("getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".");
+        output += "getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".\\n\\\n";
+    
+        groupStartingPoint = connectedPrograms.length;
+        connectedPrograms[groupStartingPoint] = groupLeader;
+        connectedPrograms[groupStartingPoint].distanceFromGroupLeader = 0;
+        
+    
+        var newLevelFound = true;
+        var currentLevel = 0;
+    
+        while (newLevelFound && currentLevel < 200) {
+            // console.log("getConnectedPrograms(" + groupLeader.index + "): currentLevel == " + currentLevel + ".");
+            // output += "getConnectedPrograms(" + groupLeader.index + "): currentLevel == " + currentLevel + ".\\n\\\n";
+            newLevelFound = false;
+    
+            for (var i = groupStartingPoint; i < connectedPrograms.length; i++) {
+                var currentParent = connectedPrograms[i];
+        
+                if (currentParent.distanceFromGroupLeader == currentLevel) {
+                    for (var j = 0; j < currentParent.connectedPrograms.length; j++) {
+                        var currentProrgram = currentParent.connectedPrograms[j];
+                        // console.log("getConnectedPrograms(): currentProgram == " + currentProrgram.toString());
                         
-                        if (!newLevelFound) {
-                            newLevelFound = true;
+                        if (!isInGroup(currentProrgram)) {
+                            currentProrgram.distanceFromGroupLeader = currentLevel + 1;
+                            connectedPrograms[connectedPrograms.length] = currentProrgram;
+                            
+                            if (!newLevelFound) {
+                                newLevelFound = true;
+                            }
                         }
                     }
                 }
             }
+    
+            // connectedPrograms.sort();
+            // console.dir(connectedPrograms);
+    
+            if (newLevelFound) {
+                // console.log("getConnectedPrograms(" + groupLeader.index + "): a new level has been found! Currently " + connectedPrograms.length + " programs connected to " + groupLeader.index + ".");
+                // output += "getConnectedPrograms(" + groupLeader.index + "): a new level has been found!\\n\\\n";
+                currentLevel++;
+            }
+            else {
+                console.log("getConnectedPrograms(" + groupLeader.index + "): " + currentLevel + " is the furthest level. Currently " + connectedPrograms.length + " programs connected to " + groupLeader.index + ".");
+                output += "getConnectedPrograms(" + groupLeader.index + "): " + currentLevel + " is the last level.\\n\\\n";
+            }
         }
+        // console.dir(connectedPrograms);
 
-        groupContaining0.sort();
-        console.dir(groupContaining0);
-
-        if (newLevelFound) {
-            console.log("getConnectedPrograms(): a new level has been found! Currently " + groupContaining0.length + " programs connected to 0.");
-            output += "getConnectedPrograms(): a new level has been found!\\n\\\n";
-            currentLevel++;
-        }
-        else {
-            console.log("getConnectedPrograms(): " + currentLevel + " is the last level.");
-            output += "getConnectedPrograms(): " + currentLevel + " is the last level.\\n\\\n";
-        }
+        getConnectedPrograms(getNewLeader());
     }
     
-
-
 }
 
 
-function isConnectedTo0(program) {
-    console.dir(groupContaining0);
-    for (var i = 0; i < groupContaining0.length; i++) {
-        if (program.index = groupContaining0[i].index) {
-            console.log("isConnectedTo0(): program " + program.index + " is connected to 0.");
+function isInGroup(program) {
+    // console.log("isInGroup(): program == " + program.toString());
+    // console.dir(program);
+    // console.dir(connectedPrograms);
+    for (var i = 0; i < connectedPrograms.length; i++) {
+        if (program.index == connectedPrograms[i].index) {
+            // console.log("isInGroup(): program " + program.index + " is in a group.");
             return true;
         }
     }
-    console.log("isConnectedTo0(): program " + program.index + " is not connected to 0.");
+    // console.log("isInGroup(): program " + program.index + " is not in any group.");
     return false;
+}
+
+
+function getNewLeader() {
+    for (var i = 0; i < programs.length; i++) {
+        var searchTerm = programs[i];
+        if (!isInGroup(searchTerm)) {
+            console.log("getNewLeader(): found prorgam " + searchTerm.toString());
+            return searchTerm;
+        }
+    }
+    return null;
 }
