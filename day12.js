@@ -10,15 +10,14 @@ var programs = [];
 var connectedPrograms = [];
 var amountOfGroups = 0;
 var groupStartingPoint = null;
-var connectedProgramsLogCutoff = 4;
 
 
 // ** Run ** //
 
 day12();
 
-// ** Functions ** //
 
+// ** Functions ** //
 
 function Program(index) {
     if (loggedSteps.includes(index)) {
@@ -62,8 +61,8 @@ function day12() {
 // ** Read and write ** //
 
 function readInputFile(inputFile, processLine) {
-    console.log("readInputFile(inputFile, processLine): start.");
-    output += "readInputFile(inputFile, processLine): start.\\n\\\n";
+    // console.log("readInputFile(inputFile, processLine): start.");
+    // output += "readInputFile(inputFile, processLine): start.\\n\\\n";
     var remaining = '';
     
     try {
@@ -99,8 +98,8 @@ function readInputFile(inputFile, processLine) {
                     // output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): remaining=='" + remaining + "'.\\n\\\n";
                     processLine(remaining);
                 }
-                console.log("readInputFile(inputFile, processLine).inputFile.on('end', function()): almost done! Proceeding to the next function.");
-                output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): almost done! Proceeding to the next function.\\n\\\n";
+                // console.log("readInputFile(inputFile, processLine).inputFile.on('end', function()): almost done! Proceeding to the next function.");
+                // output += "readInputFile(inputFile, processLine).inputFile.on('end', function()): almost done! Proceeding to the next function.\\n\\\n";
 
                 parsePrograms();
             });

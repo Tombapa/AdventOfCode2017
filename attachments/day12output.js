@@ -1,8 +1,6 @@
 var output = "<pre>\n\
 day12(): Hello, World! About to read attachments\\day12input.txt.\n\
-readInputFile(inputFile, processLine): start.\n\
 readInputFile(inputFile, processLine).inputFile.on('data', function(data)).\n\
-readInputFile(inputFile, processLine).inputFile.on('end', function()): almost done! Proceeding to the next function.\n\
 \n\
 parsePrograms(): start, populate programs[].\n\
 \n\
