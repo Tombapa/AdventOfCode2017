@@ -10,6 +10,7 @@ var programs = [];
 var connectedPrograms = [];
 var amountOfGroups = 0;
 var groupStartingPoint = null;
+var connectedProgramsLogCutoff = 4;
 
 
 // ** Run ** //
@@ -142,8 +143,8 @@ function processLine(data) {
 
 
 function parsePrograms() {
-    console.log("parsePrograms(): start.");
-    output += "parsePrograms(): start.\\n\\\n";
+    console.log("parsePrograms(): start, populate programs[].");
+    output += "\\n\\\nparsePrograms(): start, populate programs[].\\n\\\n";
 
     // console.dir(inputLines);
 
@@ -151,11 +152,14 @@ function parsePrograms() {
         programs[i] = new Program(i);
         if (loggedSteps.includes(i)) {
             console.log(programs[i].toString());
-            output += "\\n\\\n" + programs[i].toString() + ")\\n\\\n";
+            output += programs[i].toString() + "\\n\\\n";
         }
     }
     // console.dir(programs);
 
+    
+    console.log("parsePrograms(): connect programs.");
+    output += "\\n\\\nparsePrograms(): connect programs.\\n\\\n"
     for (var i = 0; i < programs.length; i++) {
         // add connected programs
 
@@ -166,28 +170,40 @@ function parsePrograms() {
         if (loggedSteps.includes(i)) {
             console.log(programs[i].toString());
             // console.dir(programs[i]);
-            output += "\\n\\\n" + programs[i].toString() + ")\\n\\\n";
+            output += programs[i].toString() + "\\n\\\n";
         }
     }   
 
-    console.log("parsePrograms(): almost done! Proceeding to the next function.");
-    output += "parsePrograms(): almost done! Proceeding to the next function.\\n\\\n";
+    console.log("parsePrograms(): done!");
+    output += "\\n\\\nparsePrograms(): done!\\n\\\n\\n\\\n";
     getConnectedPrograms(programs[0]);
 }
-
-
-
 
 
 function getConnectedPrograms(groupLeader) {
     if (groupLeader == null) {
         console.log("getConnectedPrograms(): all " + amountOfGroups + " groups have been documented.");
+        
+        output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 2 completed. The correct answer is ";
+        output += "<span id=\\\"result\\\">" + amountOfGroups + "</span>";
+        output += "<span id=\\\"mask\\\">[hover]</span>";
+        output += " groups.</strong></div>\\n\\\n";
+        output += "</pre>\";\n";
+
+        writeOutputFile(output, "day12");
     }
     else {
         amountOfGroups++;
-        console.log("getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".");
-        output += "getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".\\n\\\n";
-    
+        
+        if (loggedSteps.includes(groupLeader.index)) {
+            console.log("getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".");
+            output += "getConnectedPrograms(" + groupLeader.index + "): start, amountOfGroups == " + amountOfGroups + ".\\n\\\n";
+        }
+        else if (groupLeader.index == 10) {
+            console.log("...");
+            output += "...\\n\\\n";
+        }
+        
         groupStartingPoint = connectedPrograms.length;
         connectedPrograms[groupStartingPoint] = groupLeader;
         connectedPrograms[groupStartingPoint].distanceFromGroupLeader = 0;
@@ -221,17 +237,18 @@ function getConnectedPrograms(groupLeader) {
                 }
             }
     
-            // connectedPrograms.sort();
-            // console.dir(connectedPrograms);
-    
             if (newLevelFound) {
-                // console.log("getConnectedPrograms(" + groupLeader.index + "): a new level has been found! Currently " + connectedPrograms.length + " programs connected to " + groupLeader.index + ".");
-                // output += "getConnectedPrograms(" + groupLeader.index + "): a new level has been found!\\n\\\n";
                 currentLevel++;
             }
-            else {
+            else if (loggedSteps.includes(groupLeader.index)) {
                 console.log("getConnectedPrograms(" + groupLeader.index + "): " + currentLevel + " is the furthest level. Currently " + connectedPrograms.length + " programs connected to " + groupLeader.index + ".");
                 output += "getConnectedPrograms(" + groupLeader.index + "): " + currentLevel + " is the last level.\\n\\\n";
+                if (groupLeader.index == 0) {
+                    output += "\\n\\\n<div class=\\\"result\\\"><strong>Part 1 completed. The correct answer is ";
+                    output += "<span id=\\\"result\\\">" + connectedPrograms.length + "</span>";
+                    output += "<span id=\\\"mask\\\">[hover]</span>";
+                    output += " programs connected to " + groupLeader.index + ".</strong></div>\\n\\\n";
+                }
             }
         }
         // console.dir(connectedPrograms);
@@ -261,9 +278,25 @@ function getNewLeader() {
     for (var i = 0; i < programs.length; i++) {
         var searchTerm = programs[i];
         if (!isInGroup(searchTerm)) {
-            console.log("getNewLeader(): found prorgam " + searchTerm.toString());
+            // if (amountOfGroups < connectedProgramsLogCutoff) {
+            //     console.log("getNewLeader(): found prorgam " + searchTerm.toString());
+            //     output += "getNewLeader(): found prorgam " + searchTerm.toString()  + "\\n\\\n";
+            // }
             return searchTerm;
         }
     }
     return null;
+}
+
+
+function writeOutputFile(outputTxt, elementId) {
+    var outputJS = "var output = \""; 
+    outputJS += outputTxt;
+    // outputJS += "\\n\\\n";
+    outputJS += "\ndocument.getElementById(\"" + elementId + "\").innerHTML = output;";
+
+    fs.writeFile("attachments\\" + elementId + "output.js", outputJS, function (err) {
+        if (err) throw err;
+        console.log("writeOutputFile(): Saved!");
+    });
 }
